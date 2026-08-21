@@ -1576,3 +1576,86 @@ a {
 .clickable-footer-item {
   user-select: none;
 }
+
+/* ==========================================================================
+   SCROLL REVEAL & SPRING POP-UP MOTION ENGINE
+   ========================================================================== */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(46px) scale(0.92);
+  filter: blur(8px);
+  will-change: transform, opacity, filter;
+  transition: 
+    transform 0.75s cubic-bezier(0.34, 1.38, 0.64, 1),
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.28s ease,
+    box-shadow 0.28s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.scroll-reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+}
+
+/* Bento Cards Pop-Up Physics */
+.bento-card.scroll-reveal {
+  transform: translateY(50px) scale(0.90);
+}
+
+.bento-card.scroll-reveal.is-revealed {
+  transform: translateY(0) scale(1);
+}
+
+.bento-card.scroll-reveal.is-revealed:hover {
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: var(--shadow-bento-hover);
+  border-color: var(--border-medium);
+}
+
+.bento-card.scroll-reveal.is-revealed:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* Pop-Up Scale Variant for badges, pills, metrics */
+.scroll-reveal-scale {
+  opacity: 0;
+  transform: scale(0.82) translateY(24px);
+  filter: blur(8px);
+  will-change: transform, opacity, filter;
+  transition: 
+    transform 0.7s cubic-bezier(0.34, 1.45, 0.64, 1),
+    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.55s ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.scroll-reveal-scale.is-revealed {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0px);
+}
+
+/* Section Header Slide-Up */
+.section-header.scroll-reveal {
+  transform: translateY(32px) scale(0.96);
+}
+
+.section-header.scroll-reveal.is-revealed {
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal,
+  .scroll-reveal-scale,
+  .bento-card.scroll-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+

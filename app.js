@@ -1,7 +1,7 @@
 /**
  * Pushpa Automation & Robotics Industries
  * Apple Pro / Teenage Engineering Bento Interactive Controller Engine
- * Features: Floating Brand Intro Reveal, High-Resolution Product Photography, 100% Clickable Interactive Bento System
+ * Features: Floating Brand Intro Reveal, High-Resolution Product Photography, 100% Clickable Interactive Bento System, Silky Scroll Popups
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalListeners();
   initAllClickableCards();
   initFooterInteractiveSection();
+  initScrollPopups();
 });
 
 /* ==========================================================================
@@ -420,9 +421,10 @@ function initProductsDirectory() {
     container.innerHTML = '';
     const filtered = category === 'all' ? PRODUCTS_DATA : PRODUCTS_DATA.filter(p => p.category === category);
 
-    filtered.forEach(prod => {
+    filtered.forEach((prod, idx) => {
       const card = document.createElement('div');
-      card.className = 'bento-card product-bento-card';
+      card.className = 'bento-card product-bento-card scroll-reveal';
+      card.style.setProperty('--reveal-delay', `${(idx % 4) * 80}ms`);
       card.setAttribute('data-id', prod.id);
       card.setAttribute('title', `Click to open specifications for ${prod.name}`);
       card.innerHTML = `
@@ -453,6 +455,9 @@ function initProductsDirectory() {
     });
 
     initBentoSpotlight();
+    if (window.refreshScrollReveals) {
+      window.refreshScrollReveals(container);
+    }
   }
 
   render('all');
@@ -923,3 +928,132 @@ function initFooterInteractiveSection() {
     });
   }
 }
+
+/* ==========================================================================
+   12. SILKY SCROLL POPUP & STAGGER REVEAL ENGINE
+   ========================================================================== */
+function initScrollPopups() {
+  const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (isReducedMotion) {
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-scale').forEach(el => {
+      el.classList.add('is-revealed');
+    });
+    return;
+  }
+
+  // 1. Tag Section Headers
+  document.querySelectorAll('.section-header').forEach(header => {
+    if (!header.classList.contains('scroll-reveal')) {
+      header.classList.add('scroll-reveal');
+    }
+  });
+
+  // 2. Tag Hero Section Bento Elements
+  const heroMain = document.querySelector('.hero-main-card');
+  if (heroMain && !heroMain.classList.contains('scroll-reveal')) {
+    heroMain.classList.add('scroll-reveal');
+    heroMain.style.setProperty('--reveal-delay', '0ms');
+  }
+
+  const heroController = document.querySelector('.hero-controller-card');
+  if (heroController && !heroController.classList.contains('scroll-reveal')) {
+    heroController.classList.add('scroll-reveal');
+    heroController.style.setProperty('--reveal-delay', '120ms');
+  }
+
+  document.querySelectorAll('.hero-sub-bento .bento-sub-card').forEach((card, idx) => {
+    if (!card.classList.contains('scroll-reveal')) {
+      card.classList.add('scroll-reveal');
+      card.style.setProperty('--reveal-delay', `${idx * 90}ms`);
+    }
+  });
+
+  // 3. Tag Sensor Lab Elements (#lab)
+  const proxCard = document.getElementById('sandbox-prox-card');
+  if (proxCard && !proxCard.classList.contains('scroll-reveal')) {
+    proxCard.classList.add('scroll-reveal');
+    proxCard.style.setProperty('--reveal-delay', '0ms');
+  }
+
+  const oscCard = document.getElementById('sandbox-osc-card');
+  if (oscCard && !oscCard.classList.contains('scroll-reveal')) {
+    oscCard.classList.add('scroll-reveal');
+    oscCard.style.setProperty('--reveal-delay', '120ms');
+  }
+
+  // 4. Tag Category Filter Pills & Product Cards
+  const filterPillsContainer = document.querySelector('.category-filter-pills');
+  if (filterPillsContainer && !filterPillsContainer.classList.contains('scroll-reveal')) {
+    filterPillsContainer.classList.add('scroll-reveal');
+  }
+
+  // 5. Tag Calculator Bento & Price Card
+  const calcBento = document.querySelector('.calculator-section .bento-card');
+  if (calcBento && !calcBento.classList.contains('scroll-reveal')) {
+    calcBento.classList.add('scroll-reveal');
+  }
+
+  // 6. Tag Verified Review Bento Cards
+  document.querySelectorAll('.reviews-bento-grid .review-bento-card').forEach((card, idx) => {
+    if (!card.classList.contains('scroll-reveal')) {
+      card.classList.add('scroll-reveal');
+      card.style.setProperty('--reveal-delay', `${idx * 100}ms`);
+    }
+  });
+
+  // 7. Tag Facility & Contact Form Cards
+  document.querySelectorAll('.contact-bento-grid > .bento-card').forEach((card, idx) => {
+    if (!card.classList.contains('scroll-reveal')) {
+      card.classList.add('scroll-reveal');
+      card.style.setProperty('--reveal-delay', `${idx * 110}ms`);
+    }
+  });
+
+  // 8. Tag Footer Columns
+  document.querySelectorAll('.footer-grid > div').forEach((col, idx) => {
+    if (!col.classList.contains('scroll-reveal')) {
+      col.classList.add('scroll-reveal');
+      col.style.setProperty('--reveal-delay', `${idx * 80}ms`);
+    }
+  });
+
+  const footerBottom = document.querySelector('.footer-bottom');
+  if (footerBottom && !footerBottom.classList.contains('scroll-reveal')) {
+    footerBottom.classList.add('scroll-reveal');
+  }
+
+  // High-performance IntersectionObserver with responsive threshold
+  const revealObserver = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        // Unobserve once revealed for optimal scrolling smoothness and hover performance
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '0px 0px -30px 0px',
+    threshold: 0.05
+  });
+
+  // Export refresh helper for dynamic items
+  window.refreshScrollReveals = (scope = document) => {
+    const targets = scope.querySelectorAll('.scroll-reveal:not(.is-revealed), .scroll-reveal-scale:not(.is-revealed)');
+    targets.forEach(el => {
+      revealObserver.observe(el);
+    });
+  };
+
+  // Initial pass to observe all elements
+  window.refreshScrollReveals();
+
+  // Reveal only Hero elements initially so all other sections pop up dynamically as user scrolls down
+  setTimeout(() => {
+    document.querySelectorAll('#hero .scroll-reveal').forEach(el => {
+      el.classList.add('is-revealed');
+    });
+  }, 120);
+}
+
+
