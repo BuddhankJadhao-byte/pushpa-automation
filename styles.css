@@ -150,22 +150,18 @@ body {
   }
 }
 
-.intro-logo-emblem {
-  width: 72px;
-  height: 72px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #1e222a 0%, #101217 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 42, 75, 0.3);
+.intro-logo-banner {
+  width: 320px;
+  max-width: 85vw;
+  height: auto;
   margin-bottom: 24px;
-  position: relative;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px rgba(255, 42, 75, 0.35));
+  animation: logoPulse 2.5s infinite alternate ease-in-out;
 }
 
-.intro-logo-emblem svg {
-  stroke: var(--accent-red);
+@keyframes logoPulse {
+  0% { transform: scale(1); filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 20px rgba(255, 42, 75, 0.25)); }
+  100% { transform: scale(1.03); filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 35px rgba(255, 42, 75, 0.5)); }
 }
 
 .intro-full-brand-name {
@@ -468,20 +464,16 @@ a {
   cursor: pointer;
 }
 
-.logo-badge {
-  width: 38px;
+.brand-logo-img {
   height: 38px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #1f232c 0%, #12141a 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+  transition: transform var(--transition-fast);
 }
 
-.logo-badge svg {
-  stroke: var(--accent-red);
+.brand-logo:hover .brand-logo-img {
+  transform: scale(1.04);
 }
 
 .logo-info {

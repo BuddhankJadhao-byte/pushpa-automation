@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&amp;family=Inter:wght@700;800&amp;display=swap');
+      .logo-frame {
+        fill: none;
+        stroke: #ffffff;
+        stroke-width: 5;
+        stroke-linecap: square;
+      }
+      .logo-title {
+        font-family: 'Montserrat', 'Inter', -apple-system, sans-serif;
+        font-size: 58px;
+        font-weight: 900;
+        fill: #ffffff;
+        letter-spacing: 6px;
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+      .logo-tagline {
+        font-family: 'Montserrat', 'Inter', -apple-system, sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        fill: #ffffff;
+        letter-spacing: 7px;
+        text-anchor: middle;
+        dominant-baseline: central;
+      }
+    </style>
+  </defs>
+
+  <!-- Clean Precision Box Frame with Bottom Notch -->
+  <!-- Top line -->
+  <line x1="45" y1="40" x2="355" y2="40" class="logo-frame" />
+  <!-- Left line -->
+  <line x1="45" y1="40" x2="45" y2="155" class="logo-frame" />
+  <!-- Right line -->
+  <line x1="355" y1="40" x2="355" y2="155" class="logo-frame" />
+  
+  <!-- Bottom Left line -->
+  <line x1="45" y1="155" x2="95" y2="155" class="logo-frame" />
+  <!-- Bottom Right line -->
+  <line x1="305" y1="155" x2="355" y2="155" class="logo-frame" />
+
+  <!-- Main Text: PA & RI -->
+  <text x="203" y="94" class="logo-title">PA &amp; RI</text>
+
+  <!-- Tagline: BORN TO FLY -->
+  <text x="200" y="155" class="logo-tagline">BORN TO FLY</text>
+</svg>
