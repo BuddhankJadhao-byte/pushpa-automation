@@ -1578,20 +1578,27 @@ a {
 }
 
 /* ==========================================================================
-   SCROLL REVEAL & SPRING POP-UP MOTION ENGINE
+   BIDIRECTIONAL SCROLL REVEAL & SPRING POP-UP MOTION ENGINE
    ========================================================================== */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(46px) scale(0.92);
-  filter: blur(8px);
+  transform: translateY(44px) scale(0.92);
+  filter: blur(6px);
   will-change: transform, opacity, filter;
   transition: 
-    transform 0.75s cubic-bezier(0.34, 1.38, 0.64, 1),
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.28s ease,
-    box-shadow 0.28s ease;
+    transform 0.65s cubic-bezier(0.34, 1.36, 0.64, 1),
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
   transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Exit/Entry state when element is scrolled past the top (for scrolling up) */
+.scroll-reveal.exit-top {
+  opacity: 0;
+  transform: translateY(-38px) scale(0.94);
+  filter: blur(6px);
 }
 
 .scroll-reveal.is-revealed {
@@ -1602,7 +1609,11 @@ a {
 
 /* Bento Cards Pop-Up Physics */
 .bento-card.scroll-reveal {
-  transform: translateY(50px) scale(0.90);
+  transform: translateY(48px) scale(0.91);
+}
+
+.bento-card.scroll-reveal.exit-top {
+  transform: translateY(-40px) scale(0.93);
 }
 
 .bento-card.scroll-reveal.is-revealed {
@@ -1622,14 +1633,19 @@ a {
 /* Pop-Up Scale Variant for badges, pills, metrics */
 .scroll-reveal-scale {
   opacity: 0;
-  transform: scale(0.82) translateY(24px);
-  filter: blur(8px);
+  transform: scale(0.84) translateY(22px);
+  filter: blur(6px);
   will-change: transform, opacity, filter;
   transition: 
-    transform 0.7s cubic-bezier(0.34, 1.45, 0.64, 1),
-    opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.55s ease-out;
+    transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1),
+    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.45s ease-out;
   transition-delay: var(--reveal-delay, 0ms);
+}
+
+.scroll-reveal-scale.exit-top {
+  opacity: 0;
+  transform: scale(0.86) translateY(-22px);
 }
 
 .scroll-reveal-scale.is-revealed {
@@ -1638,9 +1654,13 @@ a {
   filter: blur(0px);
 }
 
-/* Section Header Slide-Up */
+/* Section Header Slide-Up / Slide-Down */
 .section-header.scroll-reveal {
-  transform: translateY(32px) scale(0.96);
+  transform: translateY(30px) scale(0.96);
+}
+
+.section-header.scroll-reveal.exit-top {
+  transform: translateY(-26px) scale(0.96);
 }
 
 .section-header.scroll-reveal.is-revealed {
@@ -1649,13 +1669,17 @@ a {
 
 @media (prefers-reduced-motion: reduce) {
   .scroll-reveal,
+  .scroll-reveal.exit-top,
   .scroll-reveal-scale,
-  .bento-card.scroll-reveal {
+  .scroll-reveal-scale.exit-top,
+  .bento-card.scroll-reveal,
+  .bento-card.scroll-reveal.exit-top {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     transition: none !important;
   }
 }
+
 
 

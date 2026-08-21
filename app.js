@@ -1022,24 +1022,39 @@ function initScrollPopups() {
     footerBottom.classList.add('scroll-reveal');
   }
 
-  // High-performance IntersectionObserver with responsive threshold
-  const revealObserver = new IntersectionObserver((entries, obs) => {
+  // High-performance Continuous Bidirectional IntersectionObserver (Scroll Up & Scroll Down)
+  const revealObserver = new IntersectionObserver((entries) => {
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+
     entries.forEach(entry => {
+      const el = entry.target;
+      const rect = entry.boundingClientRect;
+
       if (entry.isIntersecting) {
-        entry.target.classList.add('is-revealed');
-        // Unobserve once revealed for optimal scrolling smoothness and hover performance
-        obs.unobserve(entry.target);
+        // Element is visible in viewport -> Trigger Pop-Up
+        el.classList.remove('exit-top');
+        el.classList.add('is-revealed');
+      } else {
+        // Element left viewport -> Reset position for next scroll pass
+        if (rect.top > vh) {
+          // Element is below viewport (ready to pop up on scroll down)
+          el.classList.remove('is-revealed', 'exit-top');
+        } else if (rect.bottom < 0) {
+          // Element is above viewport (ready to pop in on scroll up)
+          el.classList.remove('is-revealed');
+          el.classList.add('exit-top');
+        }
       }
     });
   }, {
     root: null,
-    rootMargin: '0px 0px -30px 0px',
-    threshold: 0.05
+    rootMargin: '-10px 0px -30px 0px',
+    threshold: [0, 0.08]
   });
 
-  // Export refresh helper for dynamic items
+  // Export refresh helper for all elements (static and dynamic)
   window.refreshScrollReveals = (scope = document) => {
-    const targets = scope.querySelectorAll('.scroll-reveal:not(.is-revealed), .scroll-reveal-scale:not(.is-revealed)');
+    const targets = scope.querySelectorAll('.scroll-reveal, .scroll-reveal-scale');
     targets.forEach(el => {
       revealObserver.observe(el);
     });
@@ -1048,12 +1063,13 @@ function initScrollPopups() {
   // Initial pass to observe all elements
   window.refreshScrollReveals();
 
-  // Reveal only Hero elements initially so all other sections pop up dynamically as user scrolls down
+  // Reveal only Hero elements initially so all subsequent sections pop up dynamically on scroll
   setTimeout(() => {
     document.querySelectorAll('#hero .scroll-reveal').forEach(el => {
       el.classList.add('is-revealed');
     });
   }, 120);
 }
+
 
 
