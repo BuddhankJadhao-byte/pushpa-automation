@@ -1,0 +1,16 @@
+# Environment & Secrets
+.env
+*.env
+.agents/mcp_config.json
+mcp_config.json
+
+# Dependencies & IDE
+node_modules/
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+# Local Toolkits
+ui-ux-pro-max-skill-main/
+agents-cli-main/
