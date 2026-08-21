@@ -52,8 +52,23 @@ This repository contains the high-tech, sensory cyber-industrial website for **P
 
 ---
 
-## 🚀 Quick Start / Local Deployment
+## 🚀 Deployment
 
+### ⚡ Option 1: 1-Click Deploy to Vercel (Recommended)
+Deploy instantly to Vercel with automated CI/CD:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FBuddhankJadhao-byte%2Fpushpa-automation)
+
+### 💻 Option 2: Deploy via Vercel CLI
+```bash
+# 1. Login to your Vercel account
+vercel login
+
+# 2. Deploy directly from the project directory
+vercel --prod
+```
+
+### 🏠 Option 3: Local Development
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/BuddhankJadhao-byte/pushpa-automation.git
@@ -71,6 +86,7 @@ This repository contains the high-tech, sensory cyber-industrial website for **P
 
 3. **Open in browser**:
    Navigate to `http://localhost:8080` (or simply double-click `index.html`).
+
 
 ---
 
