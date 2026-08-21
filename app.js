@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
   initModalListeners();
   initAllClickableCards();
+  initFooterInteractiveSection();
 });
 
 /* ==========================================================================
@@ -801,4 +802,124 @@ function initModalListeners() {
       modal.classList.remove('active');
     }
   });
+}
+
+
+/* ==========================================================================
+   11. INTERACTIVE FOOTER & FACILITY MODAL HANDLERS
+   ========================================================================== */
+function initFooterInteractiveSection() {
+  const modal = document.getElementById('product-specs-modal');
+  const content = document.getElementById('modal-specs-content');
+
+  function openCustomModal(html) {
+    if (modal && content) {
+      content.innerHTML = html;
+      modal.classList.add('active');
+      if (window.soundFX) window.soundFX.click();
+    }
+  }
+
+  // 1. Facility Trigger (MIDC Bhosari Live Facility Status)
+  const facilityTrigger = document.getElementById('footer-facility-trigger');
+  const quickStatus = document.getElementById('footer-quick-status');
+
+  const openFacilityModal = () => {
+    openCustomModal(`
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <span class="section-pill" style="margin:0;">MIDC Bhosari Facility</span>
+        <span class="plant-status-pill" style="padding:2px 8px; font-size:0.72rem;">
+          <span class="live-beacon-dot" style="width:6px; height:6px;"></span> LIVE PRODUCTION ACTIVE
+        </span>
+      </div>
+      <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0 12px;">Pushpa Automation & Robotics Engineering Center</h2>
+      <p style="color:var(--text-muted); font-size:0.88rem; line-height:1.6; margin-bottom:16px;">
+        Our flagship manufacturing plant in MIDC Industrial Area, Bhosari specializes in ISO-compliant control panel assembly, high-speed VFD calibration, and custom PLC software commissioning.
+      </p>
+
+      <div style="background:#090a0e; border:1px solid rgba(255,255,255,0.08); padding:16px; border-radius:12px; margin-bottom:20px; font-size:0.84rem; color:#e2e8f0; display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:6px;">
+          <span style="color:var(--text-dim);">LOCATION:</span>
+          <span style="font-weight:600; color:#ffffff;">Plot No. PAP-R, MIDC Bhosari, Pune 411026</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:6px;">
+          <span style="color:var(--text-dim);">OPERATIONAL SHIFTS:</span>
+          <span style="color:#34d399; font-weight:600;">24/7 Breakdown & Emergency Desk</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:6px;">
+          <span style="color:var(--text-dim);">PLANT HOTLINE:</span>
+          <span style="color:var(--accent-red); font-weight:700;">+91 79727 41546</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:var(--text-dim);">GOOGLE RATING:</span>
+          <span style="color:#fbbf24; font-weight:700;">5.0 ★ (106+ Verified Industrial Reviews)</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">
+        <a href="https://maps.google.com/?q=Pushpa+Automation+and+Robotics+Industries+MIDC+Bhosari+Pune" target="_blank" rel="noopener" class="btn btn-primary" style="display:flex; align-items:center; justify-content:center; gap:6px;">
+          🗺️ Open Google Maps
+        </a>
+        <a href="https://wa.me/917972741546?text=Hello%20Pushpa%20Automation%2C%20I%20want%20to%20visit%20your%20MIDC%20Bhosari%20facility." target="_blank" rel="noopener" class="btn btn-secondary" style="display:flex; align-items:center; justify-content:center; gap:6px; color:#22c55e;">
+          💬 WhatsApp Plant Desk
+        </a>
+      </div>
+    `);
+  };
+
+  if (facilityTrigger) facilityTrigger.addEventListener('click', openFacilityModal);
+  if (quickStatus) quickStatus.addEventListener('click', openFacilityModal);
+
+  // 2. Google Review Click
+  const reviewBadge = document.getElementById('footer-google-review');
+  if (reviewBadge) {
+    reviewBadge.addEventListener('click', () => {
+      openCustomModal(`
+        <span class="section-pill">Google Verified Credentials</span>
+        <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">Pushpa Automation & Robotics Reviews</h2>
+        <div style="color:#fbbf24; font-size:1.3rem; margin:8px 0 14px; display:flex; align-items:center; gap:6px;">
+          ★★★★★ <span style="font-size:0.95rem; color:#ffffff; font-weight:700;">5.0 / 5.0 Rating</span>
+          <span style="font-size:0.8rem; color:var(--text-dim);">(106+ Verified Plant Owners)</span>
+        </div>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:18px; line-height:1.6;">
+          Ranked among the top-rated control panel manufacturers in MIDC Bhosari, Pune. Known for switchgear longevity, prompt commissioning, and reliable technical service.
+        </p>
+        <a href="https://www.google.com/search?q=pushpa+automation+and+robotics+industries" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+          Read All Google Reviews ↗
+        </a>
+      `);
+    });
+  }
+
+  // 3. Product Quick Links in Footer
+  document.querySelectorAll('.footer-prod-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const cat = btn.getAttribute('data-category');
+      const targetPill = document.querySelector(`.filter-pill[data-category="${cat}"]`);
+      if (targetPill) {
+        targetPill.click();
+      }
+      const productsSection = document.getElementById('products');
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  // 4. Hover Listener on Clickable elements for cursor lock-on
+  if (window.sensorEngine) {
+    const clickableEls = document.querySelectorAll('a, button, .bento-card, .clickable-metric, .clickable-footer-item, .filter-pill');
+    clickableEls.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        if (window.sensorEngine && window.sensorEngine.mouse) {
+          window.sensorEngine.mouse.isHoveringClickable = true;
+        }
+      });
+      el.addEventListener('mouseleave', () => {
+        if (window.sensorEngine && window.sensorEngine.mouse) {
+          window.sensorEngine.mouse.isHoveringClickable = false;
+        }
+      });
+    });
+  }
 }

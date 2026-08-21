@@ -8,7 +8,15 @@ class SensorEngine {
     this.canvas = null;
     this.ctx = null;
     this.particles = [];
-    this.mouse = { x: -1000, y: -1000, vx: 0, vy: 0, lastX: 0, lastY: 0, isDown: false, speed: 0 };
+    this.mouse = { x: -1000, y: -1000, vx: 0, vy: 0, lastX: 0, lastY: 0, isDown: false, speed: 0, isHoveringClickable: false };
+    // 3-Point Synchronized Tracers (Traced Three)
+    this.tracers = [
+      { x: -1000, y: -1000, radius: 4, color: '#ff003c', alpha: 1.0, lag: 0.55 },
+      { x: -1000, y: -1000, radius: 3, color: '#38bdf8', alpha: 0.85, lag: 0.25 },
+      { x: -1000, y: -1000, radius: 2, color: '#fbbf24', alpha: 0.70, lag: 0.12 }
+    ];
+    this.clickRipples = [];
+    this.laserSparks = [];
     this.radarAngle = 0;
     this.oscCanvas = null;
     this.oscCtx = null;
@@ -342,10 +350,169 @@ class SensorEngine {
 
   animate() {
     this.drawBackgroundGrid();
+    this.updateAndDraw3PointTracers(this.ctx);
     this.drawOscilloscope();
     this.mouse.speed *= 0.92;
     requestAnimationFrame(() => this.animate());
   }
+
+
+  triggerClickShockwave(x, y) {
+    // 3 Concentric Shockwave Rings (Traced Three Waves)
+    for (let i = 0; i < 3; i++) {
+      this.clickRipples.push({
+        x: x,
+        y: y,
+        radius: 4,
+        maxRadius: 60 + i * 35,
+        speed: 3.5 + i * 1.5,
+        opacity: 0.9 - i * 0.2,
+        color: i === 0 ? '#ff003c' : (i === 1 ? '#38bdf8' : '#fbbf24')
+      });
+    }
+
+    // 12 Radiant Laser Sparks
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.PI * 2 / 12) * i + (Math.random() - 0.5) * 0.4;
+      const spd = 2.5 + Math.random() * 4.5;
+      this.laserSparks.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * spd,
+        vy: Math.sin(angle) * spd,
+        life: 1.0,
+        decay: 0.03 + Math.random() * 0.02,
+        color: Math.random() > 0.5 ? '#ff003c' : '#38bdf8'
+      });
+    }
+  }
+
+  updateAndDraw3PointTracers(ctx) {
+    if (this.mouse.x <= 0 || this.mouse.y <= 0) return;
+
+    // Update 3 Tracer Positions with physics interpolation
+    this.tracers[0].x += (this.mouse.x - this.tracers[0].x) * this.tracers[0].lag;
+    this.tracers[0].y += (this.mouse.y - this.tracers[0].y) * this.tracers[0].lag;
+
+    this.tracers[1].x += (this.tracers[0].x - this.tracers[1].x) * this.tracers[1].lag;
+    this.tracers[1].y += (this.tracers[0].y - this.tracers[1].y) * this.tracers[1].lag;
+
+    this.tracers[2].x += (this.tracers[1].x - this.tracers[2].x) * this.tracers[2].lag;
+    this.tracers[2].y += (this.tracers[1].y - this.tracers[2].y) * this.tracers[2].lag;
+
+    // 1. Draw Connecting Laser Vector Lines between the 3 tracer nodes
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(this.tracers[0].x, this.tracers[0].y);
+    ctx.lineTo(this.tracers[1].x, this.tracers[1].y);
+    ctx.strokeStyle = 'rgba(255, 0, 60, 0.45)';
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(this.tracers[1].x, this.tracers[1].y);
+    ctx.lineTo(this.tracers[2].x, this.tracers[2].y);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.stroke();
+
+    // 2. Draw Tracer 3 (Aura Trail)
+    ctx.beginPath();
+    ctx.arc(this.tracers[2].x, this.tracers[2].y, this.tracers[2].radius + 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(251, 191, 36, 0.2)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(this.tracers[2].x, this.tracers[2].y, this.tracers[2].radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fill();
+
+    // 3. Draw Tracer 2 (Secondary Orbital Sensor)
+    ctx.beginPath();
+    ctx.arc(this.tracers[1].x, this.tracers[1].y, this.tracers[1].radius + 4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(this.tracers[1].x, this.tracers[1].y, this.tracers[1].radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fill();
+
+    // 4. Draw Tracer 1 (Lead Core Reticle & Diamond Target)
+    const t1 = this.tracers[0];
+    const isHover = this.mouse.isHoveringClickable;
+    const coreR = isHover ? 8 : 4.5;
+
+    ctx.beginPath();
+    ctx.arc(t1.x, t1.y, coreR + 6, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255, 0, 60, 0.6)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(t1.x, t1.y, coreR, 0, Math.PI * 2);
+    ctx.fillStyle = '#ff003c';
+    ctx.shadowColor = '#ff003c';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Crosshair Lines
+    const reticleLen = isHover ? 14 : 9;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(t1.x - reticleLen, t1.y); ctx.lineTo(t1.x - 3, t1.y);
+    ctx.moveTo(t1.x + 3, t1.y); ctx.lineTo(t1.x + reticleLen, t1.y);
+    ctx.moveTo(t1.x, t1.y - reticleLen); ctx.lineTo(t1.x, t1.y - 3);
+    ctx.moveTo(t1.x, t1.y + 3); ctx.lineTo(t1.x, t1.y + reticleLen);
+    ctx.stroke();
+
+    // 5. Draw & Update Click Shockwaves
+    for (let i = this.clickRipples.length - 1; i >= 0; i--) {
+      const rip = this.clickRipples[i];
+      rip.radius += rip.speed;
+      rip.opacity -= 0.022;
+
+      if (rip.opacity <= 0 || rip.radius >= rip.maxRadius) {
+        this.clickRipples.splice(i, 1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = rip.color;
+      ctx.globalAlpha = Math.max(0, rip.opacity);
+      ctx.lineWidth = 2;
+      ctx.shadowColor = rip.color;
+      ctx.shadowBlur = 10;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 6. Draw & Update Laser Sparks
+    for (let i = this.laserSparks.length - 1; i >= 0; i--) {
+      const spk = this.laserSparks[i];
+      spk.x += spk.vx;
+      spk.y += spk.vy;
+      spk.vy += 0.08; // subtle gravity
+      spk.life -= spk.decay;
+
+      if (spk.life <= 0) {
+        this.laserSparks.splice(i, 1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(spk.x, spk.y, 2 * spk.life, 0, Math.PI * 2);
+      ctx.fillStyle = spk.color;
+      ctx.globalAlpha = spk.life;
+      ctx.shadowColor = spk.color;
+      ctx.shadowBlur = 6;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
 }
+
 
 window.sensorEngine = new SensorEngine();
