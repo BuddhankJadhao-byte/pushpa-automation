@@ -1013,6 +1013,35 @@ Please review and send technical datasheet.`;
     }
   }
 
+  const calcAlert = document.getElementById('calc-wa-alert');
+  if (waBtn) {
+    waBtn.addEventListener('click', () => {
+      if (window.soundFX && typeof window.soundFX.click === 'function') window.soundFX.click();
+      if (calcAlert) {
+        const timeStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        calcAlert.innerHTML = `
+          <div class="auto-reply-card">
+            <div class="auto-reply-header">
+              <span class="auto-reply-badge">✓ QUOTATION DISPATCH RECEIPT</span>
+              <span class="auto-reply-time">TIMESTAMP: ${timeStr}</span>
+            </div>
+            <div class="auto-reply-body">
+              <p>Thank you for contacting <strong>Pushpa Automation &amp; Robotics Industries</strong>.</p>
+              <p>We have received your custom panel configuration. One of our engineers will review it and respond within 30 minutes during working hours (Monday–Saturday, 9:00 AM – 6:00 PM).</p>
+              <p>For urgent requirements, please call us directly: <a href="tel:07972741546" style="color:var(--accent-cyan, #00f0ff); font-weight:bold;">079727 41546</a>.</p>
+              <p class="auto-reply-signoff">
+                Regards,<br>
+                <strong>Pushpa Automation &amp; Robotics Industries</strong><br>
+                MIDC Bhosari, Pune
+              </p>
+            </div>
+          </div>
+        `;
+        calcAlert.style.display = 'block';
+      }
+    });
+  }
+
   [panelType, hpSlider, plcBrand, enclosure, sensorPack, scadaCloud].forEach(el => {
     if (el) {
       el.addEventListener('input', calculate);
