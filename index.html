@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pushpa Automation & Robotics Industries | Industrial Control Panels & SCADA Systems</title>
-  
+
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -18,7 +18,7 @@
       "priceRange": "₹10,000 - ₹4,00,000"
     }
   </script>
-  
+
   <meta name="description"
     content="Pushpa Automation & Robotics Industries - 5.0 Star Rated Industrial Automation & Control Panel Manufacturer in MIDC Bhosari, Pune. Custom PLC HMI Panels, VFD Motion Drives, Star Delta, & Industrial Sensors.">
   <meta name="keywords"
@@ -67,7 +67,8 @@
   <!-- Clean Floating Header -->
   <header class="site-header">
     <div class="container header-container">
-      <div class="brand-logo" id="header-brand-logo" title="PA & RI - Pushpa Automation & Robotics (Click to replay Intro)">
+      <div class="brand-logo" id="header-brand-logo"
+        title="PA & RI - Pushpa Automation & Robotics (Click to replay Intro)">
         <img src="images/pari_logo.svg" alt="PA & RI - Pushpa Automation and Robotics" class="brand-logo-img">
       </div>
 
@@ -75,6 +76,7 @@
         <ul class="nav-list">
           <li><a href="#hero" class="nav-link active">Overview</a></li>
           <li><a href="#lab" class="nav-link">Sensor Lab</a></li>
+          <li><a href="#walkthrough" class="nav-link">Facility Tour</a></li>
           <li><a href="#products" class="nav-link">Control Panels</a></li>
           <li><a href="#calculator" class="nav-link">Cost Calculator</a></li>
           <li><a href="#reviews" class="nav-link">Reviews (5.0★)</a></li>
@@ -102,152 +104,164 @@
   </header>
 
   <main>
-    <!-- HERO BENTO GRID SHOWCASE (EVERY CARD CLICKABLE) -->
-    <section id="hero" class="hero-section">
-      <div class="container">
-        <div class="hero-bento-grid">
-          <!-- Main Hero Bento Card -->
-          <div class="bento-card hero-main-card">
-            <div>
-              <div class="hero-rating-pill" id="hero-rating-trigger" title="Click to view verified reviews">
-                <span class="stars">★★★★★</span>
-                <span><strong>5.0 Rating</strong> • 106+ Verified Reviews ➔</span>
+    <!-- HERO COMMAND HUD (CIRCUIT-GLOW HUD MORPHISM) -->
+    <section id="hero" class="hero-section hero-hud-morphism">
+      <!-- Background Parallax Circuit Grid Canvas Layer -->
+      <canvas id="hero-circuit-canvas" class="hero-circuit-bg"></canvas>
+
+      <div class="container hero-container">
+        <div class="hero-hud-grid">
+          <!-- Left Column: Command & Value Proposition -->
+          <div class="hero-command-pane hud-panel" data-tilt-panel>
+            <div class="hud-panel-bezel">
+              <div class="hud-status-badge">
+                <span class="live-beacon-dot"></span>
+                <span class="hud-node-name">PARI-BHOSARI // NODE 01</span>
+                <span class="hud-sep">•</span>
+                <span class="hud-state-active">FACILITY SHIFT 1 ACTIVE</span>
               </div>
-              <h1 class="hero-headline">
-                Precision Automation & <span class="text-gradient-accent">Custom Control</span> Panels
+              <div class="hud-rating-mini" id="hero-rating-trigger" title="Click to view 106+ verified Google reviews">
+                <span class="stars-gold">★★★★★</span>
+                <span class="rating-text">5.0 / 5.0 (106+ Verified Reviews)</span>
+              </div>
+            </div>
+
+            <div class="hero-copy-block">
+              <h1 class="hero-hud-title" id="hero-typing-title">
+                <span id="typing-text">INDUSTRIAL PLC &amp; SCADA <span class="phosphor-text">CONTROL PANELS</span></span><span class="typing-cursor">_</span>
               </h1>
-              <p class="hero-lead">
-                Pushpa Automation & Robotics Industries engineers high-reliability PLC HMI control panels, VFD motion
-                systems, and industrial sensor automation for smart manufacturing plants across India.
+              <p class="hero-hud-lead">
+                Pushpa Automation &amp; Robotics Industries manufactures high-reliability PLC HMI control panels, VFD motion systems, and custom automation architectures for smart manufacturing plants in MIDC Bhosari and nationwide.
               </p>
+
+              <!-- Live Telemetry Parameter Strip -->
+              <div class="hero-telemetry-micro-strip">
+                <div class="micro-param">
+                  <span class="p-label">ENCLOSURE</span>
+                  <span class="p-val">IP65 CRCA</span>
+                </div>
+                <div class="micro-param">
+                  <span class="p-label">RATED BUS</span>
+                  <span class="p-val accent-green">415V 3-PHASE</span>
+                </div>
+                <div class="micro-param">
+                  <span class="p-label">DISPATCH</span>
+                  <span class="p-val accent-amber">48-72 HRS READY</span>
+                </div>
+              </div>
+
+              <!-- Action CTAs -->
               <div class="hero-cta-row">
-                <a href="#calculator" class="btn btn-primary btn-lg">
-                  Configure Panel & Get Quote ➔
+                <a href="#calculator" class="btn-hud-primary" id="hero-cta-calc">
+                  <span class="btn-glow-layer"></span>
+                  <span class="btn-text">Configure Panel &amp; Quote ➔</span>
                 </a>
-                <a href="#lab" class="btn btn-secondary btn-lg">
-                  Explore Sensor Lab
+                <a href="#walkthrough" class="btn-hud-secondary" id="hero-cta-tour">
+                  <span class="btn-text">Inside-the-Panel Tour ➔</span>
                 </a>
               </div>
             </div>
 
-            <div class="hero-metrics-bar">
-              <div class="metric-box clickable-metric" data-metric="deployed" title="Click to view deployment credentials">
-                <span class="metric-num accent">1,500+</span>
-                <span class="metric-lbl">Panels Deployed ↗</span>
-              </div>
-              <div class="metric-box clickable-metric" data-metric="rating" title="Click to view Google reviews">
-                <span class="metric-num">5.0 ★</span>
-                <span class="metric-lbl">Customer Rating ↗</span>
-              </div>
-              <div class="metric-box clickable-metric" data-metric="stock" title="Click to view ready stock hardware">
-                <span class="metric-num">100%</span>
-                <span class="metric-lbl">MIDC Ready Stock ↗</span>
-              </div>
+            <div class="hud-panel-footer">
+              <span class="hud-footer-tag">›_ 100% GENUINE OEM SWITCHGEAR</span>
+              <span class="hud-footer-tag">1-YEAR ON-SITE WARRANTY</span>
             </div>
           </div>
 
-          <!-- TEENAGE ENGINEERING 3D INTERACTIVE CONTROLLER BENTO -->
-          <div class="hero-controller-card bento-card">
-            <div class="te-header-bar">
-              <span class="te-badge">MODEL: CP-9000 TEENAGE SCADA</span>
-              <span id="panel-system-status" class="te-status-dot" title="Click to test status">ONLINE</span>
-            </div>
-
-            <!-- OLED Screen -->
-            <div class="te-oled-screen" id="te-oled-trigger" title="Click to view live SCADA telemetry diagnostics">
-              <div class="oled-col">
-                <span class="oled-param">VFD FREQ</span>
-                <span id="vfd-hz-val" class="oled-val accent">50.0 Hz</span>
+          <!-- Right Column: Operational SCADA Master HUD (Interactive 3D Tilt Card) -->
+          <div class="hero-scada-hud-pane hud-panel" data-tilt-panel id="hero-scada-card">
+            <!-- Top HUD Bezel Bar -->
+            <div class="scada-bezel-header">
+              <div class="scada-node-info">
+                <span class="scada-icon-dot"></span>
+                <span class="scada-title">LIVE PLANT TELEMETRY HUD</span>
               </div>
-              <div class="oled-col">
-                <span class="oled-param">MOTOR RPM</span>
-                <span id="vfd-rpm-val" class="oled-val">1500</span>
-              </div>
-              <div class="oled-col">
-                <span class="oled-param">LOAD AMP</span>
-                <span id="vfd-amp-val" class="oled-val accent">9.2 A</span>
+              <div class="scada-mode-pill">
+                <span class="mode-led pulse-green"></span>
+                <span class="mode-text">CYCLIC SCAN: 1.18 ms</span>
               </div>
             </div>
 
-            <!-- Rotary VFD Slider & Presets -->
-            <div class="te-control-row">
-              <div class="control-label-bar">
-                <span>VFD SPEED POTENTIOMETER</span>
-                <span id="te-slider-feedback">50.0 Hz</span>
+            <!-- Master Telemetry Readout Grid (JS Dynamically Ticking Numbers) -->
+            <div class="scada-metrics-matrix">
+              <div class="hud-metric-cell">
+                <span class="cell-label">3-PHASE VOLTAGE</span>
+                <span class="cell-val accent-amber" id="live-telemetry-voltage">415.4 V</span>
+                <span class="cell-sub">L1-L2-L3 RMS ±0.2%</span>
               </div>
-              <input type="range" id="vfd-freq-slider" min="0" max="60" step="0.5" value="50" class="te-range-slider">
-
-              <div class="te-presets-row">
-                <button class="te-preset-btn" data-hz="0">0 Hz (OFF)</button>
-                <button class="te-preset-btn" data-hz="25">25 Hz</button>
-                <button class="te-preset-btn active" data-hz="50">50 Hz</button>
-                <button class="te-preset-btn" data-hz="60">60 Hz (MAX)</button>
+              <div class="hud-metric-cell">
+                <span class="cell-label">GRID FREQUENCY</span>
+                <span class="cell-val accent-green" id="live-telemetry-freq">50.02 Hz</span>
+                <span class="cell-sub">JITTER &lt; 0.01 Hz</span>
+              </div>
+              <div class="hud-metric-cell">
+                <span class="cell-label">VFD MOTOR SPEED</span>
+                <span class="cell-val accent-cyan" id="live-telemetry-rpm">1,498 RPM</span>
+                <span class="cell-sub">CLOSED-LOOP PID</span>
+              </div>
+              <div class="hud-metric-cell">
+                <span class="cell-label">CURRENT LOAD</span>
+                <span class="cell-val accent-green" id="live-telemetry-amps">8.84 A</span>
+                <span class="cell-sub">NOMINAL / BALANCED</span>
               </div>
             </div>
 
-            <!-- Optical Sensor Counter Simulation -->
-            <div class="te-control-row">
-              <div class="control-label-bar">
-                <span>OPTICAL BEAM COUNTER</span>
-                <span id="part-count-val" style="color:#ffffff; font-weight:700;">1,428 UNITS</span>
+            <!-- Live Dynamic Signal Waveform Oscillograph Canvas -->
+            <div class="scada-wave-container">
+              <div class="wave-header">
+                <span class="wave-label">LIVE SIGNAL OSCILLOGRAPH (CH1: FLUX • CH2: CURRENT)</span>
+                <span class="wave-fps">60 FPS REAL-TIME</span>
               </div>
-              <button id="btn-conveyor-trigger" class="btn btn-secondary btn-sm btn-block">
-                Simulate Part Detection (Pass Beam) ▶
+              <canvas id="hero-wave-canvas" width="460" height="100"></canvas>
+            </div>
+
+            <!-- Interactive HUD Mode & Test Bar -->
+            <div class="scada-control-bar">
+              <button class="scada-mode-btn active" data-mode="normal" id="btn-hud-mode-auto">
+                <span class="btn-dot"></span> AUTO SCAN
               </button>
-            </div>
-
-            <!-- Tactile Pushbuttons & Emergency Stop -->
-            <div class="te-buttons-bay">
-              <button id="btn-estop" class="te-estop-btn" title="Emergency Stop Trip">
-                <span>E-STOP<br>TRIP</span>
+              <button class="scada-mode-btn" data-mode="boost" id="btn-hud-mode-boost">
+                <span class="btn-dot amber"></span> 60Hz BOOST
               </button>
-
-              <div class="te-tactile-btns">
-                <button id="btn-panel-reset" class="te-btn-tactile">
-                  <span class="btn-indicator-light"></span>
-                  RESET / RUN
-                </button>
-                <button id="btn-panel-jog" class="te-btn-tactile">
-                  <span class="btn-indicator-light amber"></span>
-                  MANUAL JOG
-                </button>
-              </div>
+              <button class="scada-mode-btn" data-mode="sync" id="btn-hud-mode-sync">
+                <span class="btn-dot cyan"></span> SYNC SCADA
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Hero Sub-Bento Cards (EVERY CARD CLICKABLE TO OPEN ENGINEERING SPECS) -->
-        <div class="hero-sub-bento">
-          <div class="bento-card bento-sub-card clickable-category-card" data-category="plc" title="Click to view PLC HMI Solutions">
-            <div class="bento-card-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-              </svg>
+      <!-- FULL-WIDTH DEDICATED TRUST & CREDIBILITY BAR -->
+      <div class="hero-trust-bar-strip">
+        <div class="container trust-strip-container">
+          <!-- Animated Numerical Metric Tickers -->
+          <div class="trust-metrics-cluster">
+            <div class="trust-metric-item clickable-metric" data-metric="deployed" title="Click to view deployment credentials">
+              <span class="trust-metric-num accent-green" id="trust-val-deployed">1,500+</span>
+              <span class="trust-metric-label">Panels Deployed Nationwide ↗</span>
             </div>
-            <h3 class="bento-card-title">PLC HMI Panels ➔</h3>
-            <p class="bento-card-desc">Siemens & Delta 32-bit SoC automation with custom ladder logic and 7" touchscreens.</p>
+            <div class="trust-divider"></div>
+            <div class="trust-metric-item clickable-metric" data-metric="rating" title="Click to view verified Google reviews">
+              <span class="trust-metric-num accent-amber" id="trust-val-rating">5.0 ★</span>
+              <span class="trust-metric-label">Google Rating (106+ Reviews) ↗</span>
+            </div>
+            <div class="trust-divider"></div>
+            <div class="trust-metric-item clickable-metric" data-metric="stock" title="Click to view ready hardware">
+              <span class="trust-metric-num accent-cyan" id="trust-val-stock">100%</span>
+              <span class="trust-metric-label">MIDC Bhosari Ready Stock ↗</span>
+            </div>
           </div>
 
-          <div class="bento-card bento-sub-card clickable-category-card" data-category="vfd" title="Click to view VFD Solutions">
-            <div class="bento-card-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-              </svg>
+          <!-- Partner Switchgear OEM Badges -->
+          <div class="trust-partners-cluster">
+            <span class="partners-label">CERTIFIED OEM COMPONENTS:</span>
+            <div class="partner-badge-pills">
+              <span class="partner-pill">SIEMENS</span>
+              <span class="partner-pill">L&amp;T SWITCHGEAR</span>
+              <span class="partner-pill">SCHNEIDER</span>
+              <span class="partner-pill">ABB</span>
+              <span class="partner-pill">DELTA</span>
             </div>
-            <h3 class="bento-card-title">VFD & Drives ➔</h3>
-            <p class="bento-card-desc">Energy-efficient speed regulation, high torque start, and dynamic brake integration.</p>
-          </div>
-
-          <div class="bento-card bento-sub-card clickable-category-card" data-category="stardelta" title="Click to view Star Delta Starters">
-            <div class="bento-card-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-            <h3 class="bento-card-title">Star Delta Panels ➔</h3>
-            <p class="bento-card-desc">Heavy-duty 50 HP motor starters built with L&T / Siemens switchgear & copper busbars.</p>
           </div>
         </div>
       </div>
@@ -259,40 +273,50 @@
         <div class="section-header text-center">
           <div class="section-pill">Interactive Engineering Sandbox</div>
           <h2 class="section-title">Sensory Telemetry & Logic Simulation</h2>
-          <p class="section-desc">Test inductive proximity detection thresholds and observe live dual-channel oscilloscope harmonics in real time.</p>
+          <p class="section-desc">Test inductive proximity detection thresholds and observe live dual-channel
+            oscilloscope harmonics in real time.</p>
         </div>
 
         <div class="lab-bento-grid">
           <!-- Sandbox 1: Inductive Proximity Sensor -->
           <div class="bento-card" id="sandbox-prox-card">
             <h3 style="font-size:1.3rem; margin-bottom:6px; color:#ffffff;">Inductive Proximity Sensor (M18) ↗</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Detects ferrous metals within 8.0 mm sensing distance.</p>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Detects ferrous metals within 8.0
+              mm sensing distance.</p>
 
             <div class="lab-visual-box">
-              <div style="width:24px; height:24px; border-radius:50%; background:#1e232c; border:2px solid var(--accent-red); display:flex; align-items:center; justify-content:center;">
+              <div
+                style="width:24px; height:24px; border-radius:50%; background:#1e232c; border:2px solid var(--accent-red); display:flex; align-items:center; justify-content:center;">
                 <span id="lab-prox-led" style="width:8px; height:8px; border-radius:50%; background:#444;"></span>
               </div>
               <div id="lab-metal-target" class="metal-target-slug">STEEL SLUG</div>
             </div>
 
             <div style="margin-bottom:16px;">
-              <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">
-                <span>Target Distance: <strong id="lab-prox-dist" style="color:var(--accent-red);">18.0 mm</strong></span>
+              <div
+                style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:8px;">
+                <span>Target Distance: <strong id="lab-prox-dist" style="color:var(--accent-red);">18.0
+                    mm</strong></span>
                 <span>Trip Threshold: &le; 8.0 mm</span>
               </div>
               <input type="range" id="lab-prox-slider" min="1" max="25" step="0.2" value="18" class="te-range-slider">
             </div>
 
-            <div style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-dim);">CONTACT RELAY:</span>
-              <span id="lab-prox-relay" style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--text-muted);">NO - OPEN (IDLE)</span>
+            <div
+              style="background:rgba(255,255,255,0.03); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-dim);">CONTACT
+                RELAY:</span>
+              <span id="lab-prox-relay"
+                style="font-family:var(--font-mono); font-size:0.75rem; font-weight:700; color:var(--text-muted);">NO -
+                OPEN (IDLE)</span>
             </div>
           </div>
 
           <!-- Sandbox 2: Oscilloscope -->
           <div class="bento-card" id="sandbox-osc-card">
             <h3 style="font-size:1.3rem; margin-bottom:6px; color:#ffffff;">Live Telemetry Oscillograph ↗</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Real-time waveform telemetry showing RTD vibration (CH1) and 415V RMS (CH2).</p>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Real-time waveform telemetry
+              showing RTD vibration (CH1) and 415V RMS (CH2).</p>
 
             <div class="osc-canvas-wrapper">
               <canvas id="telemetry-oscilloscope"></canvas>
@@ -306,13 +330,86 @@
       </div>
     </section>
 
+    <!-- IMMERSIVE FIRST-PERSON 3D FACILITY & CABINET WALKTHROUGH -->
+    <section id="walkthrough" class="walkthrough-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-pill phosphor-pill">FIRST-PERSON 3D TOUR // SPATIAL INTERACTION</div>
+          <h2 class="section-title">GO INSIDE // LIVE FACILITY WALKTHROUGH</h2>
+          <p class="section-desc">Experience an interactive first-person spatial walkthrough inside our industrial
+            control panels, DIN rail architecture, overhead plant cable runs, HMI mimic station, and supervisory SCADA
+            tier.</p>
+        </div>
+      </div>
+
+      <div class="container tour-container">
+        <!-- 3D Walkthrough Viewport Frame -->
+        <div class="walkthrough-viewport-frame" id="walkthrough-viewport-frame">
+          <!-- CRT Bezel Top Bar -->
+          <div class="tour-bezel-top">
+            <div class="tour-telemetry-leds">
+              <span class="tour-led active"></span>
+              <span class="tour-led-text">FPV TELEMETRY ACTIVE</span>
+              <span class="tour-sep">•</span>
+              <span class="tour-subtle">SWIPE OR USE ARROW KEYS TO WALK</span>
+            </div>
+            <div class="tour-step-counter" id="tour-hud-step-counter">WAYPOINT 01 / 10</div>
+          </div>
+
+          <!-- Main 3D Canvas Viewport -->
+          <div class="walkthrough-viewport" id="walkthrough-viewport">
+            <canvas id="walkthrough-canvas"></canvas>
+
+            <!-- Screen-Space Scanline & Vignette Overlay -->
+            <div class="tour-scanlines-overlay"></div>
+            <div class="tour-vignette-overlay"></div>
+
+            <!-- In-Game Minimal Location Tag HUD (Bottom-Left) -->
+            <div class="tour-hud-overlay">
+              <div class="tour-location-badge">
+                <div class="tour-location-tag" id="tour-hud-location-tag">› 01 // INDUSTRIAL ENCLOSURE // MIDC BHOSARI
+                  PLANT</div>
+                <div class="tour-location-desc" id="tour-hud-location-desc">IP65 Gasketed Mild-Steel Control Cabinet
+                  Exterior on Factory Plant Wall</div>
+              </div>
+            </div>
+
+            <!-- On-Screen Navigation Controls (Floating Prev/Next) -->
+            <button id="tour-prev-btn" class="tour-nav-arrow arrow-left"
+              title="Step Backward (Left Arrow / Swipe Right)" aria-label="Previous Waypoint">
+              ◀ BACK
+            </button>
+            <button id="tour-next-btn" class="tour-nav-arrow arrow-right"
+              title="Step Forward (Right Arrow / Swipe Left)" aria-label="Next Waypoint">
+              FORWARD ▶
+            </button>
+
+            <!-- Interactive Waypoint Dot Trail (Bottom Center) -->
+            <div class="tour-dots-trail-container">
+              <div class="tour-dots-trail" id="tour-dots-trail">
+                <!-- Injected dynamically via facility-walkthrough-engine.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Bezel Info Bar -->
+          <div class="tour-bezel-bottom">
+            <span class="tour-foot-hint">💡 <em>Swipe Left/Right, Click Arrows, or use ◄ / ► Keys to walk through. Move
+                cursor to look around.</em></span>
+            <a href="#calculator" class="tour-foot-link">Configure In Cost Calculator ➔</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- PRODUCTS CATALOG -->
     <section id="products" class="products-section">
       <div class="container">
         <div class="section-header text-center">
           <div class="section-pill">Industrial Directory</div>
           <h2 class="section-title">Control Panels & Automation Systems</h2>
-          <p class="section-desc">Manufactured in MIDC Bhosari with certified CRCA enclosures, Delta / Siemens switchgear, and 1-year comprehensive factory warranty.</p>
+          <p class="section-desc">Manufactured in MIDC Bhosari with certified CRCA enclosures, Delta / Siemens
+            switchgear, and 1-year comprehensive factory warranty.</p>
 
           <div class="category-filter-pills">
             <button class="filter-pill active" data-filter="all">All Products</button>
@@ -336,7 +433,8 @@
         <div class="section-header text-center">
           <div class="section-pill">Instant Price Estimator</div>
           <h2 class="section-title">Configure Panel & Estimate Investment</h2>
-          <p class="section-desc">Select your motor horsepower rating, PLC brand, and sensor specifications for an instant factory cost calculation.</p>
+          <p class="section-desc">Select your motor horsepower rating, PLC brand, and sensor specifications for an
+            instant factory cost calculation.</p>
         </div>
 
         <div class="bento-card">
@@ -381,36 +479,64 @@
                 </select>
               </div>
 
-              <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
-                <label style="display:flex; align-items:center; gap:10px; font-size:0.85rem; color:var(--text-body); cursor:pointer;">
-                  <input type="checkbox" id="calc-sensor-pack" checked style="accent-color:var(--accent-red);">
-                  <span>Include Sensor Package (Inductive Proximity + Optical Beam)</span>
-                </label>
-                <label style="display:flex; align-items:center; gap:10px; font-size:0.85rem; color:var(--text-body); cursor:pointer;">
-                  <input type="checkbox" id="calc-scada-cloud" style="accent-color:var(--accent-red);">
-                  <span>Include SCADA Cloud Remote Telemetry (+₹22,000)</span>
-                </label>
+              <div class="hud-switch-container">
+                <div>
+                  <input type="checkbox" id="calc-sensor-pack" class="hud-real-checkbox" checked>
+                  <label for="calc-sensor-pack" class="hud-switch-label">
+                    <div class="hud-switch-text-group">
+                      <span class="hud-switch-title">
+                        <span style="color:var(--crt-green);">◈</span> Sensor Integration Package
+                      </span>
+                      <span class="hud-switch-desc">Inductive Proximity M18 + Laser Optical Limit Pack (+₹8,500)</span>
+                    </div>
+                    <div class="hud-switch-control">
+                      <span class="hud-switch-thumb"></span>
+                    </div>
+                  </label>
+                </div>
+
+                <div>
+                  <input type="checkbox" id="calc-scada-cloud" class="hud-real-checkbox">
+                  <label for="calc-scada-cloud" class="hud-switch-label">
+                    <div class="hud-switch-text-group">
+                      <span class="hud-switch-title">
+                        <span style="color:var(--crt-amber);">◈</span> SCADA Cloud Telemetry RTU
+                      </span>
+                      <span class="hud-switch-desc">Remote MQTT / SQL Historian Live Logging (+₹22,000)</span>
+                    </div>
+                    <div class="hud-switch-control">
+                      <span class="hud-switch-thumb"></span>
+                    </div>
+                  </label>
+                </div>
               </div>
             </div>
 
             <!-- Price Breakdown Box -->
             <div class="calc-price-card">
               <div>
-                <span style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">MIDC BHOSARI FACTORY ESTIMATE</span>
+                <span
+                  style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">MIDC
+                  BHOSARI FACTORY ESTIMATE</span>
                 <div id="calc-total-cost" class="calc-total-display">₹78,500</div>
                 <p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:20px;">
                   Includes internal wiring, schematic drafting, and factory quality inspection testing.
                 </p>
 
-                <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:0.82rem; color:var(--text-body); margin-bottom:24px;">
-                  <li style="display:flex; gap:8px;"><span style="color:var(--accent-green);">✓</span> 100% Genuine Certified Switchgear</li>
-                  <li style="display:flex; gap:8px;"><span style="color:var(--accent-green);">✓</span> Custom Ladder Logic Programming Included</li>
-                  <li style="display:flex; gap:8px;"><span style="color:var(--accent-green);">✓</span> 1-Year Comprehensive Factory Warranty</li>
+                <ul
+                  style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:0.82rem; color:var(--text-body); margin-bottom:24px;">
+                  <li style="display:flex; gap:8px;"><span style="color:var(--accent-green);">✓</span> 100% Genuine
+                    Certified Switchgear</li>
+                  <li style="display:flex; gap:8px;"><span style="color:var(--accent-green);">✓</span> Custom Ladder
+                    Logic Programming Included</li>
+                  <li style="display:flex; gap:8px;"><span style="color:var(--accent-green);">✓</span> 1-Year
+                    Comprehensive Factory Warranty</li>
                 </ul>
               </div>
 
               <div style="display:flex; flex-direction:column; gap:10px;">
-                <a id="btn-calc-send-wa" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-block btn-lg">
+                <a id="btn-calc-send-wa" href="#" target="_blank" rel="noopener"
+                  class="btn btn-primary btn-block btn-lg">
                   Transmit RFQ via WhatsApp ➔
                 </a>
                 <a href="tel:07972741546" class="btn btn-secondary btn-block">
@@ -429,11 +555,13 @@
         <div class="section-header text-center">
           <div class="section-pill">Google Reviews (5.0 ★)</div>
           <h2 class="section-title">Trusted by Industrial Engineers</h2>
-          <p class="section-desc">Over 106+ verified reviews from automation engineers and plant heads across Maharashtra.</p>
+          <p class="section-desc">Over 106+ verified reviews from automation engineers and plant heads across
+            Maharashtra.</p>
         </div>
 
         <div class="reviews-bento-grid">
-          <div class="bento-card review-bento-card clickable-review" data-author="Pravin N." title="Click to view full review">
+          <div class="bento-card review-bento-card clickable-review" data-author="Pravin N."
+            title="Click to view full review">
             <div class="review-user-row">
               <div class="user-avatar">PN</div>
               <div>
@@ -443,11 +571,13 @@
             </div>
             <div style="color:#fbbf24; font-size:0.9rem;">★★★★★</div>
             <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.5;">
-              "Great experience as well as hands on practicals are done well supportive staff. The control panels supplied for our Bhosari plant are working flawlessly."
+              "Great experience as well as hands on practicals are done well supportive staff. The control panels
+              supplied for our Bhosari plant are working flawlessly."
             </p>
           </div>
 
-          <div class="bento-card review-bento-card clickable-review" data-author="Pradeep Das" title="Click to view full review">
+          <div class="bento-card review-bento-card clickable-review" data-author="Pradeep Das"
+            title="Click to view full review">
             <div class="review-user-row">
               <div class="user-avatar">PD</div>
               <div>
@@ -457,11 +587,13 @@
             </div>
             <div style="color:#fbbf24; font-size:0.9rem;">★★★★★</div>
             <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.5;">
-              "It is a good company, good behaviour, great product, osm work, loved it. Top notch VFD & PLC wiring quality in Pune."
+              "It is a good company, good behaviour, great product, osm work, loved it. Top notch VFD & PLC wiring
+              quality in Pune."
             </p>
           </div>
 
-          <div class="bento-card review-bento-card clickable-review" data-author="Dr. Kamalkishor Ingole" title="Click to view full review">
+          <div class="bento-card review-bento-card clickable-review" data-author="Dr. Kamalkishor Ingole"
+            title="Click to view full review">
             <div class="review-user-row">
               <div class="user-avatar">KI</div>
               <div>
@@ -471,7 +603,8 @@
             </div>
             <div style="color:#fbbf24; font-size:0.9rem;">★★★★★</div>
             <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.5;">
-              "Good Service and quality product. Timely delivery and prompt technical troubleshooting support whenever required."
+              "Good Service and quality product. Timely delivery and prompt technical troubleshooting support whenever
+              required."
             </p>
           </div>
         </div>
@@ -503,11 +636,13 @@
                 </div>
                 <div>
                   <strong style="color:#ffffff;">Email Desk:</strong>
-                  <p><a href="mailto:pariindia91@gmail.com" style="color:var(--accent-red);">pariindia91@gmail.com</a></p>
+                  <p><a href="mailto:pariindia91@gmail.com" style="color:var(--accent-red);">pariindia91@gmail.com</a>
+                  </p>
                 </div>
                 <div>
                   <strong style="color:#ffffff;">Working Hours:</strong>
-                  <p id="facility-live-status" style="cursor:pointer; color:var(--accent-green);">Mon-Sat: 9:00 AM – 6:00 PM (Plant Active)</p>
+                  <p id="facility-live-status" style="cursor:pointer; color:var(--accent-green);">Mon-Sat: 9:00 AM –
+                    6:00 PM (Plant Active)</p>
                 </div>
               </div>
             </div>
@@ -523,9 +658,12 @@
           <!-- Form -->
           <div class="bento-card">
             <h3 style="font-size:1.4rem; margin-bottom:8px; color:#ffffff;">Submit Engineering Inquiry</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Our electrical engineers will review and respond within 30 minutes.</p>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Our electrical engineers will
+              review and respond within 30 minutes.</p>
 
-            <div id="contact-form-alert" style="display:none; margin-bottom:16px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid var(--accent-green); border-radius:var(--radius-sm); color:#ffffff; font-size:0.85rem;"></div>
+            <div id="contact-form-alert"
+              style="display:none; margin-bottom:16px; padding:12px; background:rgba(16,185,129,0.1); border:1px solid var(--accent-green); border-radius:var(--radius-sm); color:#ffffff; font-size:0.85rem;">
+            </div>
 
             <form id="contact-form" style="display:flex; flex-direction:column; gap:14px;">
               <input type="text" name="name" class="apple-input" placeholder="Your Name / Organization" required>
@@ -537,7 +675,8 @@
                 <option value="flameproof">Flame Proof Hazardous Panel</option>
                 <option value="sensors">CNC Sensors & Delta Hardware</option>
               </select>
-              <textarea name="requirement" rows="3" class="apple-textarea" placeholder="Detail your project specifications..." required></textarea>
+              <textarea name="requirement" rows="3" class="apple-textarea"
+                placeholder="Detail your project specifications..." required></textarea>
               <button type="submit" class="btn btn-primary btn-block">
                 Submit Inquiry to Engineers ➔
               </button>
@@ -580,12 +719,14 @@
     <div class="container">
       <div class="footer-grid">
         <div>
-          <img src="images/pari_logo.svg" alt="PA & RI Born To Fly" style="height: 38px; width: auto; margin-bottom: 12px; display: block;">
+          <img src="images/pari_logo.svg" alt="PA & RI Born To Fly"
+            style="height: 38px; width: auto; margin-bottom: 12px; display: block;">
           <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
             Premier industrial control panels and automation systems engineered in MIDC Bhosari, Pune.
           </p>
           <div style="margin-top: 14px;">
-            <div class="plant-status-pill clickable-footer-item" id="footer-quick-status" title="Click to view live facility status">
+            <div class="plant-status-pill clickable-footer-item" id="footer-quick-status"
+              title="Click to view live facility status">
               <span class="live-beacon-dot"></span>
               <span>MIDC Bhosari: Shift 1 Active</span>
             </div>
@@ -596,6 +737,7 @@
           <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:0.84rem;">
             <li><a href="#hero" class="footer-link-interactive">Overview ↗</a></li>
             <li><a href="#lab" class="footer-link-interactive">Sensor Lab ↗</a></li>
+            <li><a href="#walkthrough" class="footer-link-interactive">Facility Tour ↗</a></li>
             <li><a href="#products" class="footer-link-interactive">Control Panels ↗</a></li>
             <li><a href="#calculator" class="footer-link-interactive">Price Calculator ↗</a></li>
             <li><a href="#reviews" class="footer-link-interactive">Client Reviews (5.0★) ↗</a></li>
@@ -605,39 +747,62 @@
         <div>
           <h4 style="font-size:0.9rem; margin-bottom:14px; color:#ffffff;">Products</h4>
           <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:0.84rem;">
-            <li><a href="#products" class="footer-link-interactive footer-prod-btn" data-category="plc">PLC HMI Panels ↗</a></li>
-            <li><a href="#products" class="footer-link-interactive footer-prod-btn" data-category="vfd">VFD Motion Drives ↗</a></li>
-            <li><a href="#products" class="footer-link-interactive footer-prod-btn" data-category="star-delta">Star Delta Starters ↗</a></li>
-            <li><a href="#products" class="footer-link-interactive footer-prod-btn" data-category="flameproof">Flameproof Systems ↗</a></li>
+            <li><a href="#products" class="footer-link-interactive footer-prod-btn" data-category="plc">PLC HMI Panels
+                ↗</a></li>
+            <li><a href="#products" class="footer-link-interactive footer-prod-btn" data-category="vfd">VFD Motion
+                Drives ↗</a></li>
+            <li><a href="#products" class="footer-link-interactive footer-prod-btn" data-category="star-delta">Star
+                Delta Starters ↗</a></li>
+            <li><a href="#products" class="footer-link-interactive footer-prod-btn"
+                data-category="flameproof">Flameproof Systems ↗</a></li>
           </ul>
         </div>
         <div>
           <h4 style="font-size:0.9rem; margin-bottom:14px; color:#ffffff;">Contact</h4>
           <div style="font-size:0.84rem; color:var(--text-muted); display:flex; flex-direction:column; gap:8px;">
-            <a href="https://maps.google.com/?q=Pushpa+Automation+and+Robotics+Industries+MIDC+Bhosari+Pune" target="_blank" rel="noopener" class="footer-link-interactive" title="Open Google Maps Location">📍 MIDC Bhosari, Pune 411026 ↗</a>
-            <a href="tel:07972741546" class="footer-link-interactive" title="Call Plant Hotline">📞 Hotline: <strong style="color:var(--accent-red);">079727 41546</strong></a>
-            <a href="mailto:pariindia91@gmail.com" class="footer-link-interactive" title="Send Official Email">✉️ pariindia91@gmail.com</a>
-            <a href="https://wa.me/917972741546?text=Hello%20Pushpa%20Automation%2C%20I%20want%20to%20inquire%20about%20control%20panels." target="_blank" rel="noopener" class="footer-link-interactive" style="color:#22c55e; font-weight:600;" title="Chat with Engineering Desk">💬 WhatsApp Facility Desk ↗</a>
+            <a href="https://maps.google.com/?q=Pushpa+Automation+and+Robotics+Industries+MIDC+Bhosari+Pune"
+              target="_blank" rel="noopener" class="footer-link-interactive" title="Open Google Maps Location">📍 MIDC
+              Bhosari, Pune 411026 ↗</a>
+            <a href="tel:07972741546" class="footer-link-interactive" title="Call Plant Hotline">📞 Hotline: <strong
+                style="color:var(--accent-red);">079727 41546</strong></a>
+            <a href="mailto:pariindia91@gmail.com" class="footer-link-interactive" title="Send Official Email">✉️
+              pariindia91@gmail.com</a>
+            <a href="https://wa.me/917972741546?text=Hello%20Pushpa%20Automation%2C%20I%20want%20to%20inquire%20about%20control%20panels."
+              target="_blank" rel="noopener" class="footer-link-interactive" style="color:#22c55e; font-weight:600;"
+              title="Chat with Engineering Desk">💬 WhatsApp Facility Desk ↗</a>
           </div>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <div class="footer-rating-badge clickable-footer-item" id="footer-google-review" title="Click to view verified 5.0 Google Reviews">
+        <div class="footer-rating-badge clickable-footer-item" id="footer-google-review"
+          title="Click to view verified 5.0 Google Reviews">
           <span>&copy; 2026 Pushpa Automation &amp; Robotics Industries.</span>
           <span class="rating-highlight">Rated 5.0 on Google ★ (106+ Verified Reviews) ↗</span>
         </div>
-        <div class="footer-facility-live-badge clickable-footer-item" id="footer-facility-trigger" title="Click to view MIDC Bhosari Facility Status, Live Shift &amp; Directions">
+        <div class="footer-facility-live-badge clickable-footer-item" id="footer-facility-trigger"
+          title="Click to view MIDC Bhosari Facility Status, Live Shift &amp; Directions">
           <span class="live-beacon-dot"></span>
-          <span class="facility-text">MIDC Bhosari Engineering Facility <strong class="status-live-tag">• Live &amp; Active ↗</strong></span>
+          <span class="facility-text">MIDC Bhosari Engineering Facility <strong class="status-live-tag">• Live &amp;
+              Active ↗</strong></span>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- 3D WebGL Walkthrough Stack (Three.js r128 + EffectComposer + UnrealBloomPass) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+  <!-- Core Application Scripts -->
   <script src="sound-fx.js"></script>
   <script src="sensor-engine.js"></script>
+  <script src="facility-walkthrough-engine.js"></script>
   <script src="app.js"></script>
 </body>
 

@@ -16,9 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize Modules
   initBrandIntroAnimation();
-  initTe3DController();
+  initHeroHudMorphism();
   initBentoSpotlight();
   initSensorLab();
+  initFacilityWalkthrough();
   initProductsDirectory();
   initQuoteCalculator();
   initAudioControls();
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAllClickableCards();
   initFooterInteractiveSection();
   initScrollPopups();
+  initStatsTicker();
 });
 
 /* ==========================================================================
@@ -88,159 +90,299 @@ function initBrandIntroAnimation() {
 }
 
 /* ==========================================================================
-   2. TEENAGE ENGINEERING 3D CONTROLLER & VFD SIMULATION
+   2. HERO COMMAND HUD (CIRCUIT-GLOW HUD MORPHISM & LIVE TELEMETRY)
    ========================================================================== */
-function initTe3DController() {
-  const card = document.querySelector('.hero-controller-card');
-  const vfdSlider = document.getElementById('vfd-freq-slider');
-  const vfdHzDisplay = document.getElementById('vfd-hz-val');
-  const vfdRpmDisplay = document.getElementById('vfd-rpm-val');
-  const vfdAmpDisplay = document.getElementById('vfd-amp-val');
-  const teSliderFeedback = document.getElementById('te-slider-feedback');
-  const presetBtns = document.querySelectorAll('.te-preset-btn');
-  const eStopBtn = document.getElementById('btn-estop');
-  const resetBtn = document.getElementById('btn-panel-reset');
-  const jogBtn = document.getElementById('btn-panel-jog');
-  const systemStatus = document.getElementById('panel-system-status');
-  const conveyorBtn = document.getElementById('btn-conveyor-trigger');
-  const partCountDisplay = document.getElementById('part-count-val');
+function initHeroHudMorphism() {
+  const heroSection = document.getElementById('hero');
+  const circuitCanvas = document.getElementById('hero-circuit-canvas');
+  const waveCanvas = document.getElementById('hero-wave-canvas');
+  const tiltPanels = document.querySelectorAll('[data-tilt-panel]');
 
-  let currentFreq = 50.0;
-  let isEStopActive = false;
-  let partCount = 1428;
+  const valVoltage = document.getElementById('live-telemetry-voltage');
+  const valFreq = document.getElementById('live-telemetry-freq');
+  const valRpm = document.getElementById('live-telemetry-rpm');
+  const valAmps = document.getElementById('live-telemetry-amps');
 
-  // 3D Parallax Tilt Effect on Controller Card
-  if (card) {
-    card.addEventListener('mousemove', (e) => {
-      if (window.innerWidth < 992) return;
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
+  const modeButtons = document.querySelectorAll('.scada-mode-btn');
 
-      const rotateX = (-y / (rect.height / 2)) * 10;
-      const rotateY = (x / (rect.width / 2)) * 10;
+  let currentMode = 'normal';
+  let targetFreq = 50.0;
+  let targetVoltage = 415.4;
+  let targetRpm = 1500;
+  let targetAmps = 8.84;
 
-      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`;
-    });
+  let mousePos = { x: 0.5, y: 0.5 };
 
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)';
-    });
-  }
+  // 0. Typing Animation for Main Headline
+  const typingTextEl = document.getElementById('typing-text');
+  if (typingTextEl) {
+    const plain = 'INDUSTRIAL PLC & SCADA CONTROL PANELS';
+    typingTextEl.innerHTML = '';
+    let idx = 0;
+    const speed = 36;
 
-  function updateVfd(hz) {
-    if (vfdHzDisplay) vfdHzDisplay.textContent = `${hz.toFixed(1)} Hz`;
-    if (teSliderFeedback) teSliderFeedback.textContent = `${hz.toFixed(1)} Hz`;
-    const rpm = Math.round(hz * 30);
-    const amp = (hz * 0.16 + 1.2).toFixed(1);
-    if (vfdRpmDisplay) vfdRpmDisplay.textContent = `${rpm}`;
-    if (vfdAmpDisplay) vfdAmpDisplay.textContent = `${amp} A`;
-  }
-
-  if (vfdSlider) {
-    vfdSlider.addEventListener('input', (e) => {
-      if (isEStopActive) return;
-      currentFreq = parseFloat(e.target.value);
-      updateVfd(currentFreq);
-      highlightPreset(currentFreq);
-      if (window.soundFX) {
-        window.soundFX.startMotor(currentFreq);
-        window.soundFX.updateMotorSpeed(currentFreq);
+    function typeChar() {
+      idx++;
+      if (idx <= plain.length) {
+        if (idx <= 23) {
+          typingTextEl.textContent = plain.substring(0, idx);
+        } else {
+          const part1 = plain.substring(0, 23);
+          const part2 = plain.substring(23, idx);
+          typingTextEl.innerHTML = `${part1}<span class="phosphor-text">${part2}</span>`;
+        }
+        setTimeout(typeChar, speed);
+      } else {
+        typingTextEl.innerHTML = 'INDUSTRIAL PLC &amp; SCADA <span class="phosphor-text">CONTROL PANELS</span>';
       }
-    });
+    }
 
-    vfdSlider.addEventListener('change', () => {
-      if (window.soundFX) window.soundFX.click();
+    setTimeout(typeChar, 180);
+  }
+
+  // 1. Mouse Parallax & 3D Perspective Tilt on Panels
+  if (heroSection) {
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      mousePos.x = (e.clientX - rect.left) / rect.width;
+      mousePos.y = (e.clientY - rect.top) / rect.height;
+
+      tiltPanels.forEach(panel => {
+        const pRect = panel.getBoundingClientRect();
+        const pCenterX = pRect.left + pRect.width / 2;
+        const pCenterY = pRect.top + pRect.height / 2;
+        const deltaX = (e.clientX - pCenterX) / (pRect.width / 2);
+        const deltaY = (e.clientY - pCenterY) / (pRect.height / 2);
+
+        // Clamped tilt angles (max 6 degrees)
+        const tiltX = (-deltaY * 5).toFixed(2);
+        const tiltY = (deltaX * 5).toFixed(2);
+
+        // Proximity glow calculation
+        const dist = Math.hypot(e.clientX - pCenterX, e.clientY - pCenterY);
+        const glowVal = Math.max(0.18, Math.min(0.55, 1 - dist / 600)).toFixed(2);
+
+        panel.style.setProperty('--tilt-x', `${tiltX}deg`);
+        panel.style.setProperty('--tilt-y', `${tiltY}deg`);
+        panel.style.setProperty('--glow-border', glowVal);
+      });
+    }, { passive: true });
+
+    heroSection.addEventListener('mouseleave', () => {
+      tiltPanels.forEach(panel => {
+        panel.style.setProperty('--tilt-x', '0deg');
+        panel.style.setProperty('--tilt-y', '0deg');
+        panel.style.setProperty('--glow-border', '0.18');
+      });
     });
   }
 
-  presetBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (isEStopActive) return;
-      const hz = parseFloat(btn.dataset.hz || 50);
-      currentFreq = hz;
-      if (vfdSlider) vfdSlider.value = hz;
-      updateVfd(hz);
-      highlightPreset(hz);
-      if (window.soundFX) {
+  // 2. Background Parallax Circuit Grid Canvas
+  if (circuitCanvas) {
+    const ctx = circuitCanvas.getContext('2d');
+    let cWidth = (circuitCanvas.width = heroSection ? heroSection.clientWidth : window.innerWidth);
+    let cHeight = (circuitCanvas.height = heroSection ? heroSection.clientHeight : 600);
+
+    window.addEventListener('resize', () => {
+      if (!heroSection) return;
+      cWidth = circuitCanvas.width = heroSection.clientWidth;
+      cHeight = circuitCanvas.height = heroSection.clientHeight;
+    }, { passive: true });
+
+    // Procedural circuit nodes
+    const nodes = [];
+    for (let i = 0; i < 28; i++) {
+      nodes.push({
+        x: Math.random() * cWidth,
+        y: Math.random() * cHeight,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: Math.random() * 2 + 1.5,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+
+    function renderCircuitBg() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, cWidth, cHeight);
+
+      const offsetX = (mousePos.x - 0.5) * 30;
+      const offsetY = (mousePos.y - 0.5) * 20;
+
+      // Grid lines
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.04)';
+      ctx.lineWidth = 1;
+      const step = 48;
+      for (let x = (offsetX % step); x < cWidth; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, cHeight);
+        ctx.stroke();
+      }
+      for (let y = (offsetY % step); y < cHeight; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(cWidth, y);
+        ctx.stroke();
+      }
+
+      // Draw nodes & interconnect traces
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.14)';
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy;
+        n.pulse += 0.03;
+
+        if (n.x < 0) n.x = cWidth;
+        if (n.x > cWidth) n.x = 0;
+        if (n.y < 0) n.y = cHeight;
+        if (n.y > cHeight) n.y = 0;
+
+        const posX = n.x + offsetX * 0.6;
+        const posY = n.y + offsetY * 0.6;
+
+        ctx.fillStyle = `rgba(0, 240, 255, ${0.28 + Math.sin(n.pulse) * 0.22})`;
+        ctx.beginPath();
+        ctx.arc(posX, posY, n.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        for (let j = i + 1; j < nodes.length; j++) {
+          const n2 = nodes[j];
+          const d = Math.hypot(n.x - n2.x, n.y - n2.y);
+          if (d < 120) {
+            ctx.strokeStyle = `rgba(0, 240, 255, ${(1 - d / 120) * 0.14})`;
+            ctx.beginPath();
+            ctx.moveTo(posX, posY);
+            ctx.lineTo(n2.x + offsetX * 0.6, n2.y + offsetY * 0.6);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(renderCircuitBg);
+    }
+    renderCircuitBg();
+  }
+
+  // 3. Genuine Dynamic Ticking Intervals for Telemetry Numbers
+  setInterval(() => {
+    if (document.hidden) return;
+
+    // Micro jitter around nominal values
+    const vJitter = (Math.random() - 0.5) * 0.6;
+    const fJitter = (Math.random() - 0.5) * 0.04;
+    const rJitter = Math.round((Math.random() - 0.5) * 6);
+    const aJitter = (Math.random() - 0.5) * 0.12;
+
+    const curV = (targetVoltage + vJitter).toFixed(1);
+    const curF = (targetFreq + fJitter).toFixed(2);
+    const curR = Math.round(targetRpm + rJitter);
+    const curA = (targetAmps + aJitter).toFixed(2);
+
+    if (valVoltage) valVoltage.textContent = `${curV} V`;
+    if (valFreq) valFreq.textContent = `${curF} Hz`;
+    if (valRpm) valRpm.textContent = `${curR.toLocaleString()} RPM`;
+    if (valAmps) valAmps.textContent = `${curA} A`;
+  }, 900);
+
+  // 4. Live 60FPS Signal Oscillograph Canvas
+  if (waveCanvas) {
+    const wCtx = waveCanvas.getContext('2d');
+    let phase = 0;
+
+    function renderOscillograph() {
+      if (!wCtx) return;
+      const w = waveCanvas.width;
+      const h = waveCanvas.height;
+
+      wCtx.fillStyle = '#02060e';
+      wCtx.fillRect(0, 0, w, h);
+
+      // Grid lines
+      wCtx.strokeStyle = 'rgba(0, 240, 255, 0.1)';
+      wCtx.lineWidth = 1;
+      for (let x = 0; x < w; x += 30) {
+        wCtx.beginPath();
+        wCtx.moveTo(x, 0);
+        wCtx.lineTo(x, h);
+        wCtx.stroke();
+      }
+      for (let y = 0; y < h; y += 20) {
+        wCtx.beginPath();
+        wCtx.moveTo(0, y);
+        wCtx.lineTo(w, y);
+        wCtx.stroke();
+      }
+
+      // Center baseline
+      wCtx.strokeStyle = 'rgba(0, 240, 255, 0.2)';
+      wCtx.beginPath();
+      wCtx.moveTo(0, h / 2);
+      wCtx.lineTo(w, h / 2);
+      wCtx.stroke();
+
+      const speedMultiplier = currentMode === 'boost' ? 1.4 : 1.0;
+      phase += 0.06 * speedMultiplier;
+
+      // CH1: Flux Wave (Electric Cyan)
+      wCtx.strokeStyle = '#00f0ff';
+      wCtx.lineWidth = 2;
+      wCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const freqRatio = (targetFreq / 50.0);
+        const y = h / 2 + Math.sin(x * 0.04 * freqRatio + phase) * 28 + Math.sin(x * 0.08 + phase * 1.5) * 6;
+        if (x === 0) wCtx.moveTo(x, y);
+        else wCtx.lineTo(x, y);
+      }
+      wCtx.stroke();
+
+      // CH2: Current Wave (Ice Blue)
+      wCtx.strokeStyle = '#38bdf8';
+      wCtx.lineWidth = 1.5;
+      wCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const freqRatio = (targetFreq / 50.0);
+        const y = h / 2 + Math.sin(x * 0.04 * freqRatio + phase + Math.PI / 3) * 20;
+        if (x === 0) wCtx.moveTo(x, y);
+        else wCtx.lineTo(x, y);
+      }
+      wCtx.stroke();
+
+      requestAnimationFrame(renderOscillograph);
+    }
+    renderOscillograph();
+  }
+
+  // 5. Mode Selector Buttons Interactivity
+  modeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modeButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentMode = btn.dataset.mode || 'normal';
+
+      if (currentMode === 'boost') {
+        targetFreq = 60.0;
+        targetRpm = 1800;
+        targetVoltage = 422.0;
+        targetAmps = 10.45;
+      } else if (currentMode === 'sync') {
+        targetFreq = 50.0;
+        targetRpm = 1500;
+        targetVoltage = 415.0;
+        targetAmps = 8.50;
+      } else {
+        targetFreq = 50.0;
+        targetRpm = 1498;
+        targetVoltage = 415.4;
+        targetAmps = 8.84;
+      }
+
+      if (window.soundFX && typeof window.soundFX.click === 'function') {
         window.soundFX.click();
-        window.soundFX.startMotor(hz);
-        window.soundFX.updateMotorSpeed(hz);
       }
     });
   });
-
-  function highlightPreset(hz) {
-    presetBtns.forEach(btn => {
-      if (parseFloat(btn.dataset.hz) === Math.round(hz)) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-  }
-
-  // E-STOP Trigger
-  if (eStopBtn) {
-    eStopBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      isEStopActive = true;
-      eStopBtn.classList.add('pressed');
-      if (systemStatus) {
-        systemStatus.textContent = 'TRIPPED';
-        systemStatus.style.color = '#ef4444';
-        systemStatus.style.background = 'rgba(239, 68, 68, 0.15)';
-      }
-      if (vfdRpmDisplay) vfdRpmDisplay.textContent = '0';
-      if (vfdAmpDisplay) vfdAmpDisplay.textContent = '0.0 A';
-      if (window.soundFX) {
-        window.soundFX.emergencyStop();
-        window.soundFX.stopMotor();
-      }
-    });
-  }
-
-  // Reset Button
-  if (resetBtn) {
-    resetBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      isEStopActive = false;
-      if (eStopBtn) eStopBtn.classList.remove('pressed');
-      if (systemStatus) {
-        systemStatus.textContent = 'ONLINE';
-        systemStatus.style.color = '#10b981';
-        systemStatus.style.background = 'rgba(16, 185, 129, 0.1)';
-      }
-      updateVfd(currentFreq);
-      if (window.soundFX) window.soundFX.click();
-    });
-  }
-
-  // Manual Jog
-  if (jogBtn) {
-    jogBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (isEStopActive) return;
-      if (vfdRpmDisplay) {
-        const orig = vfdRpmDisplay.textContent;
-        vfdRpmDisplay.textContent = '600';
-        setTimeout(() => vfdRpmDisplay.textContent = orig, 500);
-      }
-      if (window.soundFX) window.soundFX.click();
-    });
-  }
-
-  // Conveyor Pass Part
-  if (conveyorBtn) {
-    conveyorBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (isEStopActive) return;
-      partCount++;
-      if (partCountDisplay) partCountDisplay.textContent = `${partCount.toLocaleString()} UNITS`;
-      if (window.soundFX) window.soundFX.sensorTrigger();
-    });
-  }
 }
 
 /* ==========================================================================
@@ -300,113 +442,164 @@ function initSensorLab() {
 /* ==========================================================================
    5. PRODUCTS DIRECTORY & REAL PRODUCT PHOTOGRAPHY
    ========================================================================== */
+/* ==========================================================================
+   5. PRODUCTS DIRECTORY & INTERACTIVE HARDWARE SPEC MATRIX
+   ========================================================================== */
 const PRODUCTS_DATA = [
   {
     id: 'plc-hmi-panel',
     name: 'PLC HMI Automated Control Panel',
     category: 'plc',
+    oem: 'DELTA / SIEMENS',
+    status: 'READY IN 48-72 HRS',
+    voltage: '415V 3-PHASE',
+    enclosure: 'IP65 CRCA',
+    warranty: '1-YR WARRANTY',
     image: 'images/plc_hmi_panel.jpg',
     priceDisplay: '₹45,000.00',
-    shortDesc: 'Delta / Siemens 32-bit SoC CPU paired with 7-inch Color Touchscreen HMI and pre-programmed ladder automation.',
+    shortDesc: 'Delta / Siemens 32-bit SoC CPU paired with 7-inch Color Touchscreen HMI, optical isolation, and pre-programmed ladder automation logic.',
     specs: [
-      'CPU: Delta AS Series 32-bit SoC or Siemens S7-1200',
-      'HMI: 7.0" TFT High Resolution Color Touchscreen (IP65 front)',
-      'Digital I/O: 16 Inputs / 16 Relay/Transistor Outputs',
-      'Analog Channels: 4 Channels 4-20mA / 0-10V DC',
-      'Enclosure: CRCA Steel Sheet (RAL 7035 Powder Coated, IP55)'
+      'CPU Microcontroller: Delta AS Series 32-bit SoC or Siemens S7-1200 CPU',
+      'HMI Operator Display: 7.0" TFT High-Res Color Touchscreen (IP65 front bezel)',
+      'Digital I/O Channels: 16 Optocoupler-Isolated Inputs / 16 Relay Outputs',
+      'Analog Instrumentation: 4 Channels 4-20mA / 0-10V DC for RTD/Pressure sensors',
+      'Cabinet Enclosure: 14-Gauge CRCA Sheet Steel, RAL 7035 Powder Coated with PU Gasket',
+      'Switchgear Protection: Siemens / L&T Thermal Magnetic Circuit Breakers + 24V PSU'
     ]
   },
   {
     id: 'vfd-heavy-panel',
-    name: 'Heavy Duty VFD Control Panel',
+    name: 'Heavy Duty VFD Motion Panel',
     category: 'vfd',
+    oem: 'DELTA MS300 / SCHNEIDER',
+    status: 'IN STOCK - MIDC',
+    voltage: '415V 3-PHASE',
+    enclosure: 'IP55 DUAL FAN',
+    warranty: '1-YR WARRANTY',
     image: 'images/vfd_heavy_panel.jpg',
     priceDisplay: '₹45,000.00',
-    shortDesc: 'Precision Variable Frequency Drive panel for high torque industrial motors with dynamic braking unit.',
+    shortDesc: 'Precision Variable Frequency Drive panel for high torque industrial motors with dynamic braking resistor and thermal safety interlocks.',
     specs: [
-      'Motor Rating: 15 HP to 30 HP AC Induction Motors',
-      'Drive: Delta MS300 / C2000 Plus or Schneider Altivar',
-      'Protection: Phase Loss, Short Circuit, Thermal Overload',
-      'Cooling: Dual Ball-Bearing Exhaust Fans with Louver Filters'
+      'Motor Power Range: 15 HP to 30 HP AC Induction Motor Drives',
+      'VFD Drive Core: Delta MS300 / C2000 Plus or Schneider Altivar 320',
+      'Dynamic Braking: Aluminum Cased Braking Resistor with Overheat Protection',
+      'Thermal Management: Dual Ball-Bearing High CFM Exhaust Fans with Louvered Filters',
+      'Operator Controls: Door-Mounted Speed Potentiometer, FWD/REV Selector, E-STOP'
     ]
   },
   {
     id: 'vfd-standard-panel',
     name: 'Compact VFD Speed Panel',
     category: 'vfd',
+    oem: 'DELTA / ABB',
+    status: 'READY IN 24-48 HRS',
+    voltage: '415V 3-PHASE',
+    enclosure: 'IP54 COMPACT',
+    warranty: '1-YR WARRANTY',
     image: 'images/vfd_heavy_panel.jpg',
     priceDisplay: '₹25,000.00',
-    shortDesc: 'Compact speed regulation panel with emergency interlock and digital frequency readout.',
+    shortDesc: 'Compact motor speed regulation panel with instant digital frequency readout, line choke, and emergency trip contactor.',
     specs: [
-      'Motor Rating: Up to 7.5 HP (3 Phase 415V AC)',
-      'Display: 4-Digit Digital Frequency Monitor',
-      'Enclosure: Compact Wall Mount IP54 Powder Coated Box'
+      'Motor Power Range: 0.5 HP to 7.5 HP 3-Phase 415V AC Motors',
+      'Digital Readout: 4-Digit High-Visibility LED Frequency / RPM Display',
+      'Switchgear Integration: MCB + Magnetic Contactor + Overload Relay Assembly',
+      'Enclosure: Wall-Mount Powder Coated CRCA Cabinet with Rubber Cable Glands'
     ]
   },
   {
     id: 'star-delta-50hp',
     name: '50 HP Heavy Star Delta Starter Panel',
     category: 'stardelta',
+    oem: 'L&T SWITCHGEAR / SIEMENS',
+    status: 'IN STOCK - MIDC',
+    voltage: '415V 50HZ',
+    enclosure: 'IP55 CRCA',
+    warranty: '1-YR WARRANTY',
     image: 'images/star_delta_panel.jpg',
     priceDisplay: '₹4,00,000.00',
-    shortDesc: 'Premium high-tension industrial motor starter panel engineered with Siemens/L&T switchgear and copper busbars.',
+    shortDesc: 'Premium high-tension industrial motor starter panel engineered with heavy L&T/Siemens air-break contactors and electrolytic copper busbars.',
     specs: [
-      'Capacity: 50 HP (37 kW) Continuous Heavy Duty Duty',
-      'Switchgear: L&T / Siemens Air Break Contactors',
-      'Busbar: Electrolytic Grade High Conductivity Copper',
-      'Meters: Digital Multifunction Meter (V, A, PF, kW, kWh)'
+      'Motor Starting Capacity: 50 HP (37 kW) Continuous Heavy Duty Inrush Handling',
+      'Switchgear: 3x L&T ML Series Air Break Contactors + Electronic Star-Delta Timer',
+      'Busbar System: Electrolytic Grade High Conductivity Tinned Copper Busbars',
+      'Multifunction Meter: Microprocessor Digital Meter (Voltage, Amps, PF, kW, kWh)',
+      'Protection Suite: Single Phase Preventer, Phase Reversal, Under/Over Voltage'
     ]
   },
   {
     id: 'star-delta-standard',
-    name: 'Standard Star Delta Starter',
+    name: 'Standard Star Delta Motor Starter',
     category: 'stardelta',
+    oem: 'L&T / SCHNEIDER',
+    status: 'READY IN 24 HRS',
+    voltage: '415V 50HZ',
+    enclosure: 'IP54 STEEL',
+    warranty: '1-YR WARRANTY',
     image: 'images/star_delta_panel.jpg',
     priceDisplay: '₹18,000.00',
-    shortDesc: 'Automatic Star-Delta starter panel designed for smooth current inrush reduction and motor protection.',
+    shortDesc: 'Automatic Star-Delta reduction panel designed for smooth starting torque, reduced grid surge, and reliable pump/compressor operation.',
     specs: [
-      'Capacity: 7.5 HP to 15 HP Motors',
-      'Components: 3 Heavy Duty Contactors + Thermal Overload',
-      'Control: Auto / Manual Star-Delta Transition Timer'
+      'Motor Rating: 7.5 HP to 15 HP 3-Phase Induction Motors',
+      'Contactors: Heavy Duty 3-Pole Power Contactors with Silver Alloy Contacts',
+      'Timer: Precision Solid-State Adjustable Transition Timer (0.5 to 30 sec)',
+      'Enclosure: IP54 Wall Mounting Sheet Metal Enclosure with Hinged Door'
     ]
   },
   {
     id: 'flame-proof-panel',
     name: 'Flame Proof Industrial Panel (Ex-d)',
     category: 'specialty',
+    oem: 'CIMFR / PESO CERTIFIED',
+    status: 'CUSTOM FABRICATION',
+    voltage: '415V / 230V',
+    enclosure: 'IP66 CAST ALLOY',
+    warranty: '1-YR WARRANTY',
     image: 'images/flameproof_panel.jpg',
     priceDisplay: '₹55,000.00',
-    shortDesc: 'CIMFR certified explosion-proof control panel for hazardous chemical, gas, and paint booth zones.',
+    shortDesc: 'CIMFR/PESO certified explosion-proof control enclosure for hazardous chemical processing plants, refineries, and paint booth zones.',
     specs: [
-      'Classification: Zone 1, Zone 2, Gas Groups IIA, IIB & IIC',
-      'Material: Cast Aluminium LM6 Alloy / SS316',
-      'Protection: IP66 Weatherproof & Dust-tight'
+      'Hazardous Classification: Zone 1, Zone 2, Gas Groups IIA, IIB & IIC',
+      'Chassis Material: Heavy Cast Aluminium LM6 Alloy or SS316 Stainless Steel',
+      'Hardware: Flameproof Pushbuttons, Neoprene O-Ring Weatherproof Seal (IP66)',
+      'Certification: Compliant with IS/IEC 60079-0 and 60079-1 standards'
     ]
   },
   {
     id: 'delta-as-plc',
     name: 'Delta AS Series Compact PLC',
     category: 'sensors',
+    oem: 'DELTA ELECTRONICS',
+    status: 'IN STOCK - MIDC',
+    voltage: '24V DC / 230V AC',
+    enclosure: 'DIN RAIL MOUNT',
+    warranty: '1-YR WARRANTY',
     image: 'images/delta_as_plc.jpg',
     priceDisplay: '₹16,500.00',
-    shortDesc: 'High performance 32-bit SoC modular controller with CANopen, Modbus, and EtherNet/IP communication.',
+    shortDesc: 'High performance 32-bit SoC modular controller with built-in CANopen, Modbus RTU/TCP, and EtherNet/IP industrial protocol support.',
     specs: [
-      'Speed: 40k steps / 1ms execution',
-      'Program Capacity: Up to 128k steps',
-      'Expansion: Up to 32 modules / 1,024 I/O points'
+      'Processing Speed: 40k steps execution within 1.0 ms scan cycle',
+      'Program Memory: 128k steps Ladder Logic / Structured Text',
+      'Expansion Capacity: Up to 32 expansion modules (max 1,024 I/O points)',
+      'Communication: Built-in Dual Ethernet Ports + RS-485 + Mini USB Programming'
     ]
   },
   {
     id: 'cnc-sensor-pack',
     name: 'CNC Machine Sensors Pack',
     category: 'sensors',
+    oem: 'OMRON / AUTONICS COMPAT',
+    status: 'IN STOCK - MIDC',
+    voltage: '10-30V DC',
+    enclosure: 'IP67 SEALED',
+    warranty: '1-YR WARRANTY',
     image: 'images/industrial_sensors_pack.jpg',
     priceDisplay: '₹6,500.00',
-    shortDesc: 'Complete sensor package including M18 inductive proximity switches and optical laser limit beams.',
+    shortDesc: 'Complete sensor integration bundle including M18 shielded inductive proximity switches and optical laser diffuse limit sensors.',
     specs: [
-      'Proximity: 4x M18 PNP Normally Open (8mm sensing)',
-      'Optical: 2x Diffuse Laser Sensors (300mm range)',
-      'Rating: IP67 Oil & Coolant Resistant'
+      'Inductive Switches: 4x M18 PNP Normally Open (8.0mm sensing threshold, brass nickeled)',
+      'Optical Sensors: 2x Diffuse Reflection Laser Sensors (300mm adjustable range)',
+      'Environmental Protection: IP67 Oil, Coolant, and Vibration Resistant Housing',
+      'Cabling: 2-meter Oil-Proof PVC Flexible Sheathed Core Leads'
     ]
   }
 ];
@@ -423,38 +616,91 @@ function initProductsDirectory() {
 
     filtered.forEach((prod, idx) => {
       const card = document.createElement('div');
-      card.className = 'bento-card product-bento-card scroll-reveal';
+      card.className = 'product-hardware-card scroll-reveal';
       card.style.setProperty('--reveal-delay', `${(idx % 4) * 80}ms`);
       card.setAttribute('data-id', prod.id);
-      card.setAttribute('title', `Click to open specifications for ${prod.name}`);
+
       card.innerHTML = `
+        <div class="product-card-header">
+          <span class="product-category-chip">${prod.category.toUpperCase()}</span>
+          <span class="product-oem-chip">${prod.oem}</span>
+        </div>
+
         <div class="product-photo-box">
           <img src="${prod.image}" alt="${prod.name}" class="product-photo-img" loading="lazy">
+          <span class="product-status-pill">${prod.status}</span>
         </div>
-        <span class="product-category-tag">${prod.category.toUpperCase()}</span>
+
         <h3 class="product-name">${prod.name}</h3>
         <p class="product-desc">${prod.shortDesc}</p>
+
+        <!-- Debossed Micro Parameters Row -->
+        <div class="product-params-row">
+          <div class="product-param-cell">
+            <span class="param-k">VOLTAGE</span>
+            <span class="param-v">${prod.voltage}</span>
+          </div>
+          <div class="product-param-cell">
+            <span class="param-k">HOUSING</span>
+            <span class="param-v">${prod.enclosure}</span>
+          </div>
+          <div class="product-param-cell">
+            <span class="param-k">WARRANTY</span>
+            <span class="param-v">${prod.warranty}</span>
+          </div>
+        </div>
+
+        <!-- Inline Expandable Technical Spec Drawer -->
+        <div class="product-spec-drawer-wrapper" id="drawer-${prod.id}">
+          <div class="product-spec-drawer-inner">
+            <div class="product-spec-drawer">
+              <div class="drawer-title">
+                <span>◈</span> FACTORY TECHNICAL SPECIFICATIONS
+              </div>
+              <ul class="drawer-specs-list">
+                ${prod.specs.map(s => `<li>${s}</li>`).join('')}
+              </ul>
+              <div class="drawer-cta-row">
+                <a href="https://wa.me/917972741546?text=${encodeURIComponent(`Hello Pushpa Automation, I want a formal quote & datasheet for ${prod.name} (${prod.priceDisplay}).`)}" target="_blank" rel="noopener" class="btn-hud-primary" style="padding:10px 16px; font-size:0.75rem;">
+                  Transmit RFQ via WhatsApp ➔
+                </a>
+                <a href="#calculator" class="btn-hud-secondary" style="padding:10px 14px; font-size:0.75rem;" onclick="document.getElementById('calc-panel-type') && (document.getElementById('calc-panel-type').value = '${prod.category === 'plc' ? 'plc_hmi' : prod.category === 'vfd' ? 'vfd' : prod.category === 'stardelta' ? 'stardelta' : 'plc_hmi'}');">
+                  Customize in Calculator ➔
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Bar with Price & Spec Toggle -->
         <div class="product-card-footer">
-          <div>
-            <div style="font-size:0.68rem; font-family:var(--font-mono); color:var(--text-dim);">STARTING AT</div>
-            <div class="product-price-display">${prod.priceDisplay}</div>
+          <div class="product-price-block">
+            <span class="price-sub">MIDC BHOSARI RATE</span>
+            <span class="product-price-val">${prod.priceDisplay}</span>
           </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-secondary btn-sm btn-open-specs" data-id="${prod.id}">Specs ➔</button>
-            <a href="https://wa.me/917972741546?text=${encodeURIComponent(`Hello Pushpa Automation, I want to order ${prod.name} (${prod.priceDisplay}).`)}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" onclick="event.stopPropagation();">Order</a>
-          </div>
+          <button class="btn-toggle-specs" data-drawer="drawer-${prod.id}">
+            <span class="btn-toggle-text">Specs ▾</span>
+          </button>
         </div>
       `;
 
-      // Entire card is clickable to open specs modal
-      card.addEventListener('click', () => {
-        openSpecs(prod.id);
+      // Wire up toggle button
+      const toggleBtn = card.querySelector('.btn-toggle-specs');
+      const drawerWrapper = card.querySelector(`#drawer-${prod.id}`);
+      const toggleText = card.querySelector('.btn-toggle-text');
+
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = drawerWrapper.classList.toggle('open');
+        toggleText.textContent = isOpen ? 'Specs ▴' : 'Specs ▾';
+        if (window.soundFX && typeof window.soundFX.click === 'function') {
+          window.soundFX.click();
+        }
       });
 
       container.appendChild(card);
     });
 
-    initBentoSpotlight();
     if (window.refreshScrollReveals) {
       window.refreshScrollReveals(container);
     }
@@ -467,7 +713,9 @@ function initProductsDirectory() {
       filterPills.forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
       render(pill.dataset.filter);
-      if (window.soundFX) window.soundFX.click();
+      if (window.soundFX && typeof window.soundFX.click === 'function') {
+        window.soundFX.click();
+      }
     });
   });
 }
@@ -672,7 +920,7 @@ function initAllClickableCards() {
 }
 
 /* ==========================================================================
-   7. SMART QUOTATION ESTIMATOR
+   7. SMART QUOTATION ESTIMATOR (WITH SMOOTH NUMERIC TICKER)
    ========================================================================== */
 function initQuoteCalculator() {
   const panelType = document.getElementById('calc-panel-type');
@@ -684,6 +932,45 @@ function initQuoteCalculator() {
   const scadaCloud = document.getElementById('calc-scada-cloud');
   const totalCost = document.getElementById('calc-total-cost');
   const waBtn = document.getElementById('btn-calc-send-wa');
+
+  let currentDisplayedPrice = 78500;
+  let priceAnimFrame = null;
+
+  function animatePriceTo(targetVal) {
+    if (!totalCost) return;
+    if (priceAnimFrame) cancelAnimationFrame(priceAnimFrame);
+
+    const startVal = currentDisplayedPrice;
+    const diff = targetVal - startVal;
+    if (Math.abs(diff) < 1) {
+      currentDisplayedPrice = targetVal;
+      totalCost.textContent = '₹' + targetVal.toLocaleString('en-IN');
+      return;
+    }
+
+    const duration = 280;
+    const startTime = performance.now();
+    totalCost.classList.add('is-ticking');
+
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = 1 - Math.pow(1 - progress, 3); // cubic out
+      const current = Math.round(startVal + diff * ease);
+
+      totalCost.textContent = '₹' + current.toLocaleString('en-IN');
+
+      if (progress < 1) {
+        priceAnimFrame = requestAnimationFrame(update);
+      } else {
+        currentDisplayedPrice = targetVal;
+        totalCost.textContent = '₹' + targetVal.toLocaleString('en-IN');
+        setTimeout(() => totalCost.classList.remove('is-ticking'), 100);
+      }
+    }
+
+    priceAnimFrame = requestAnimationFrame(update);
+  }
 
   function calculate() {
     const hp = hpSlider ? parseInt(hpSlider.value) : 15;
@@ -710,8 +997,7 @@ function initQuoteCalculator() {
     if (sensorPack && sensorPack.checked) base += 8500;
     if (scadaCloud && scadaCloud.checked) base += 22000;
 
-    const formatted = '₹' + base.toLocaleString('en-IN');
-    if (totalCost) totalCost.textContent = formatted;
+    animatePriceTo(base);
 
     if (waBtn) {
       const msg = `Hello Pushpa Automation, I configured a custom control panel quote:
@@ -721,7 +1007,7 @@ function initQuoteCalculator() {
 - Enclosure: ${enclosure ? enclosure.options[enclosure.selectedIndex].text : 'IP55'}
 - Sensor Pack: ${sensorPack && sensorPack.checked ? 'Yes' : 'No'}
 - SCADA Cloud: ${scadaCloud && scadaCloud.checked ? 'Yes' : 'No'}
-- Estimated Cost: ${formatted}
+- Estimated Cost: ₹${base.toLocaleString('en-IN')}
 Please review and send technical datasheet.`;
       waBtn.href = `https://wa.me/917972741546?text=${encodeURIComponent(msg)}`;
     }
@@ -731,7 +1017,7 @@ Please review and send technical datasheet.`;
     if (el) {
       el.addEventListener('input', calculate);
       el.addEventListener('change', () => {
-        if (window.soundFX) window.soundFX.click();
+        if (window.soundFX && typeof window.soundFX.click === 'function') window.soundFX.click();
         calculate();
       });
     }
@@ -1071,5 +1357,95 @@ function initScrollPopups() {
   }, 120);
 }
 
+/* ==========================================================================
+   12b. ANIMATED METRICS NUMBER TICKER (21st.dev / HUD INTELLIGENCE)
+   ========================================================================== */
+function initStatsTicker() {
+  const trustStrip = document.querySelector('.hero-trust-bar-strip') || document.querySelector('.trust-metrics-cluster');
+  if (!trustStrip) return;
 
+  let hasAnimated = false;
 
+  const animateValue = (el, start, end, duration, formatFn) => {
+    const startTime = performance.now();
+    el.classList.add('is-ticking');
+
+    const update = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = 1 - Math.pow(1 - progress, 3); // cubic ease out
+      const current = start + (end - start) * ease;
+
+      el.textContent = formatFn(current);
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = formatFn(end);
+        setTimeout(() => el.classList.remove('is-ticking'), 150);
+      }
+    };
+
+    requestAnimationFrame(update);
+  };
+
+  const tickerObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !hasAnimated) {
+        hasAnimated = true;
+
+        const deployedEl = document.getElementById('trust-val-deployed') || document.querySelector('[data-metric="deployed"] .trust-metric-num');
+        const ratingEl = document.getElementById('trust-val-rating') || document.querySelector('[data-metric="rating"] .trust-metric-num');
+        const stockEl = document.getElementById('trust-val-stock') || document.querySelector('[data-metric="stock"] .trust-metric-num');
+
+        if (deployedEl) {
+          animateValue(deployedEl, 0, 1500, 1400, (v) => `${Math.round(v).toLocaleString('en-IN')}+`);
+        }
+        if (ratingEl) {
+          animateValue(ratingEl, 0, 5.0, 1200, (v) => `${v.toFixed(1)} ★`);
+        }
+        if (stockEl) {
+          animateValue(stockEl, 0, 100, 1000, (v) => `${Math.round(v)}%`);
+        }
+
+        tickerObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  tickerObserver.observe(trustStrip);
+}
+
+/* ==========================================================================
+   13. FIRST-PERSON 3D FACILITY & CABINET WALKTHROUGH CONTROLLER
+   ========================================================================== */
+function initFacilityWalkthrough() {
+  const section = document.getElementById('walkthrough');
+  const viewport = document.getElementById('walkthrough-viewport');
+  const canvas = document.getElementById('walkthrough-canvas');
+
+  if (!section || !viewport || !canvas) return;
+
+  let walkthroughEngine = null;
+
+  // Lazy Initialize 3D Engine upon viewport intersection
+  const tourObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!walkthroughEngine && typeof window.FacilityWalkthroughEngine !== 'undefined') {
+          walkthroughEngine = new window.FacilityWalkthroughEngine('walkthrough-viewport', 'walkthrough-canvas');
+          window.facilityTour = walkthroughEngine;
+        } else if (walkthroughEngine) {
+          walkthroughEngine.isActive = true;
+          walkthroughEngine.animate();
+        }
+      } else {
+        if (walkthroughEngine) {
+          walkthroughEngine.isActive = false; // Pause rendering when off-screen
+        }
+      }
+    });
+  }, { rootMargin: '250px 0px 250px 0px' });
+
+  tourObserver.observe(section);
+}
