@@ -1047,6 +1047,9 @@ function initAudioControls() {
 /* ==========================================================================
    9. CONTACT FORM SUBMISSION (DIRECT WHATSAPP RFQ TRANSMISSION)
    ========================================================================== */
+/* ==========================================================================
+   9. CONTACT FORM SUBMISSION (DIRECT WHATSAPP RFQ TRANSMISSION & AUTO-REPLY)
+   ========================================================================== */
 function initContactForm() {
   const form = document.getElementById('contact-form');
   const alertBox = document.getElementById('contact-form-alert');
@@ -1074,11 +1077,40 @@ ${requirement}
 _Transmitted via Pushpa Automation Portal_`;
 
       const waUrl = `https://wa.me/917972741546?text=${encodeURIComponent(waMessage)}`;
+      const timeStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
       if (alertBox) {
         alertBox.innerHTML = `
-          <strong>✓ Connecting to WhatsApp...</strong><br>
-          Thank you <strong>${name}</strong>. If WhatsApp did not open automatically, <a href="${waUrl}" target="_blank" rel="noopener" style="color:var(--accent-cyan, #00f0ff); text-decoration:underline; font-weight:700;">click here to send your inquiry</a>.
+          <div class="auto-reply-card">
+            <div class="auto-reply-header">
+              <span class="auto-reply-badge">✓ AUTOMATED DISPATCH RECEIPT</span>
+              <span class="auto-reply-time">TIMESTAMP: ${timeStr}</span>
+            </div>
+            <div class="auto-reply-body">
+              <p>Thank you for contacting <strong>Pushpa Automation &amp; Robotics Industries</strong>.</p>
+              <p>We have received your inquiry. One of our engineers will review it and respond within 30 minutes during working hours (Monday–Saturday, 9:00 AM – 6:00 PM).</p>
+              <p>For urgent requirements, please call us directly: <a href="tel:07972741546" style="color:var(--accent-cyan, #00f0ff); font-weight:bold;">079727 41546</a>.</p>
+              <div class="auto-reply-checklist">
+                <strong>To help us respond faster, please share:</strong>
+                <ul>
+                  <li>Panel type required (PLC/HMI, VFD, Star Delta, or Flameproof)</li>
+                  <li>Motor capacity (HP)</li>
+                  <li>Preferred PLC brand (Siemens, Delta, or Schneider)</li>
+                </ul>
+              </div>
+              <p class="auto-reply-signoff">
+                Regards,<br>
+                <strong>Pushpa Automation &amp; Robotics Industries</strong><br>
+                MIDC Bhosari, Pune
+              </p>
+            </div>
+            <div style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(0,240,255,0.2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <span style="font-size:0.72rem; color:#7dd3fc;">WhatsApp chat initiated in new window</span>
+              <a href="${waUrl}" target="_blank" rel="noopener" class="btn-hud-primary" style="padding:6px 14px; font-size:0.72rem; text-decoration:none;">
+                Open Chat on WhatsApp ➔
+              </a>
+            </div>
+          </div>
         `;
         alertBox.style.display = 'block';
       }
