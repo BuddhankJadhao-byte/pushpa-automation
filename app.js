@@ -759,28 +759,50 @@ function openSpecs(prodId) {
 /* ==========================================================================
    6. MAKE EVERY TILE / CARD CLICKABLE & INTERACTIVE
    ========================================================================== */
+/* ==========================================================================
+   6. REAL-TIME SCADA TELEMETRY TRACER & GLOBAL CLICKABILITY ENGINE
+   ========================================================================== */
+window.__telemetryLogs = [];
+
+window.traceEvent = function(category, action, payload = '') {
+  const timestamp = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const entry = { timestamp, category: category.toUpperCase(), action: action.toUpperCase(), payload };
+  window.__telemetryLogs.unshift(entry);
+  if (window.__telemetryLogs.length > 50) window.__telemetryLogs.pop();
+
+  const feedText = document.getElementById('telemetry-feed-text');
+  if (feedText) {
+    feedText.innerHTML = `<span class="trace-tag">[${entry.category}]</span> ${entry.action} ${payload ? '• ' + payload : ''}`;
+  }
+
+  // Console telemetry stream
+  console.log(`%c[SCADA TRACE ${timestamp}] ${entry.category} » ${entry.action} ${payload ? '(' + payload + ')' : ''}`, 'color: #00f0ff; font-weight: bold; background: #040914; padding: 2px 6px; border-radius: 3px;');
+};
+
 function initAllClickableCards() {
   const modal = document.getElementById('product-specs-modal');
   const content = document.getElementById('modal-specs-content');
 
-  function openCustomModal(html) {
+  function openCustomModal(html, category = 'SYSTEM_MODAL', action = 'OPEN') {
     if (modal && content) {
       content.innerHTML = html;
       modal.classList.add('active');
-      if (window.soundFX) window.soundFX.click();
+      window.traceEvent(category, action);
+      if (window.soundFX && typeof window.soundFX.click === 'function') window.soundFX.click();
     }
   }
 
   // 1. Hero Rating Pill Click
   const ratingPill = document.getElementById('hero-rating-trigger');
   if (ratingPill) {
+    ratingPill.classList.add('clickable-element');
     ratingPill.addEventListener('click', () => {
       openCustomModal(`
         <span class="section-pill">Google Verified Reputation</span>
         <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">5.0 Star Rated Industrial Automation Leader</h2>
         <p style="color:var(--text-muted); margin-bottom:20px;">Based on 106+ verified reviews from automation heads, SPM manufacturers, and plant engineers across MIDC Bhosari and Pune.</p>
-        <div style="background:#090a0e; padding:16px; border-radius:10px; border:1px solid var(--border-subtle); margin-bottom:20px;">
-          <h4 style="color:var(--accent-red); font-family:var(--font-mono); font-size:0.8rem; margin-bottom:8px;">VERIFIED HIGHLIGHTS</h4>
+        <div style="background:#090a0e; padding:16px; border-radius:10px; border:1px solid rgba(0,240,255,0.2); margin-bottom:20px;">
+          <h4 style="color:#00f0ff; font-family:var(--font-mono); font-size:0.8rem; margin-bottom:8px;">VERIFIED HIGHLIGHTS</h4>
           <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; font-size:0.84rem; color:#ffffff;">
             <li>✓ 100% On-time commissioning and prompt breakdown service</li>
             <li>✓ Genuine Siemens, Delta, Schneider, and L&T switchgear</li>
@@ -790,12 +812,89 @@ function initAllClickableCards() {
         <a href="https://www.google.com/search?q=pushpa+automation+and+robotics+industries" target="_blank" rel="noopener" class="btn btn-primary btn-block">
           Open Google Maps & Read All 106 Reviews ↗
         </a>
-      `);
+      `, 'REPUTATION', 'VIEW_GOOGLE_5_STAR_REVIEWS');
     });
   }
 
-  // 2. Clickable Metrics Boxes
+  // 2. Hero Parameter Badges (IP65, 415V, Ready in 48-72 hrs)
+  document.querySelectorAll('.hud-param-badge').forEach((badge) => {
+    badge.classList.add('clickable-element');
+    badge.addEventListener('click', () => {
+      const text = badge.textContent.trim();
+      let title = "Industrial Enclosure Standards";
+      let desc = "Pushpa Automation enclosures are fabricated from 14/16 gauge CRCA sheet steel, treated through a 7-tank phosphating process, and powder-coated with RAL 7035 finish for maximum corrosion resistance.";
+      if (text.includes('415V')) {
+        title = "3-Phase 415V 50Hz Power Architecture";
+        desc = "Engineered to withstand heavy inductive surges, voltage sags, and grid harmonics. Equipped with Phase Failure Relays, Class C Surge Arresters, and high rupture capacity (HRC) fuses.";
+      } else if (text.includes('48-72')) {
+        title = "Rapid 48-72 Hour Plant Turnaround";
+        desc = "With ready warehouse inventory of Delta PLCs, VFDs, and Siemens switchgear at our MIDC Bhosari plant, standard control panels can be assembled, wired, and bench-tested within 48 to 72 hours.";
+      }
+
+      openCustomModal(`
+        <span class="section-pill">Engineering Standard</span>
+        <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">${title}</h2>
+        <p style="color:var(--text-muted); margin-bottom:20px; line-height:1.6;">${desc}</p>
+        <div style="background:#090a0e; padding:16px; border-radius:10px; border:1px solid rgba(0,240,255,0.2); margin-bottom:20px; font-family:var(--font-mono); font-size:0.8rem; color:#38bdf8;">
+          <div>• COMPLIANCE: IS/IEC 61439-1 &amp; 2 Verified</div>
+          <div>• WIRING: FRLS Copper Tri-Rated Flame Retardant</div>
+          <div>• TESTING: 2.5 kV Dielectric High-Pot Tested</div>
+        </div>
+        <a href="https://wa.me/917972741546?text=${encodeURIComponent(`Hello Pushpa Automation, I want technical details on ${title}.`)}" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+          Consult Electrical Engineer on WhatsApp ➔
+        </a>
+      `, 'HERO_SPEC', text);
+    });
+  });
+
+  // 3. Hero SCADA Telemetry Cells (Voltage, Hz, RPM, Amps)
+  document.querySelectorAll('.hud-metric-cell').forEach((cell) => {
+    cell.classList.add('clickable-element');
+    cell.addEventListener('click', () => {
+      const label = cell.querySelector('.hud-metric-label')?.textContent || 'Telemetry Channel';
+      const val = cell.querySelector('.hud-metric-value')?.textContent || 'Live Feed';
+
+      openCustomModal(`
+        <span class="section-pill">SCADA Telemetry Diagnostic</span>
+        <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">${label} Monitor</h2>
+        <p style="color:var(--text-muted); margin-bottom:16px;">Real-time bus measurement sampled at 60 Hz via optical isolation and CT transducer inputs.</p>
+        <div style="background:#090a0e; padding:18px; border-radius:10px; border:1px solid rgba(0,240,255,0.25); font-family:var(--font-mono); font-size:0.85rem; color:#cbd5e1; margin-bottom:20px; display:flex; flex-direction:column; gap:8px;">
+          <div>CURRENT VALUE: <strong style="color:#00f0ff; font-size:1.1rem;">${val}</strong></div>
+          <div>SAMPLING RATE: <span style="color:#ffffff;">60 Hz Continuous</span></div>
+          <div>ISOLATION: <span style="color:#10b981;">3,750 Vrms Optocoupler (OK)</span></div>
+          <div>COMM BUS: <span style="color:#ffffff;">RS-485 Modbus RTU / Profinet</span></div>
+        </div>
+        <a href="https://wa.me/917972741546?text=${encodeURIComponent(`Hello Pushpa Automation, I want to discuss SCADA telemetry instrumentation for ${label}.`)}" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+          Request SCADA Integration Quote ➔
+        </a>
+      `, 'TELEMETRY_CELL', `${label}_${val}`);
+    });
+  });
+
+  // 4. Certified OEM Switchgear Partner Pills (Siemens, L&T, Schneider, ABB, Delta)
+  document.querySelectorAll('.trust-chip').forEach((chip) => {
+    chip.classList.add('clickable-element');
+    chip.addEventListener('click', () => {
+      const oemName = chip.textContent.trim();
+      openCustomModal(`
+        <span class="section-pill">Authorized OEM Switchgear</span>
+        <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">${oemName} Integration</h2>
+        <p style="color:var(--text-muted); margin-bottom:18px;">Pushpa Automation uses 100% genuine, certified ${oemName} power switchgear, contactors, VFDs, and PLCs with manufacturer test certificates (MTC).</p>
+        <div style="background:#090a0e; padding:16px; border-radius:10px; border:1px solid rgba(0,240,255,0.2); margin-bottom:20px; font-size:0.84rem; color:#ffffff;">
+          <p>✓ Genuine OEM Serial Numbers &amp; QR Barcode Verification</p>
+          <p>✓ Type-Tested Short Circuit Coordination (Type-2 Coordination)</p>
+          <p>✓ Factory Authorized Replacement Spares Available in MIDC Bhosari</p>
+        </div>
+        <a href="https://wa.me/917972741546?text=${encodeURIComponent(`Hello Pushpa Automation, I want a control panel built with ${oemName} switchgear.`)}" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+          Inquire ${oemName} Panel Quote ➔
+        </a>
+      `, 'OEM_PARTNER', oemName);
+    });
+  });
+
+  // 5. Clickable Metrics Boxes in Trust Bar
   document.querySelectorAll('.clickable-metric').forEach(metric => {
+    metric.classList.add('clickable-element');
     metric.addEventListener('click', () => {
       const type = metric.dataset.metric;
       let title = "1,500+ Control Panels Deployed";
@@ -816,62 +915,33 @@ function initAllClickableCards() {
           <a href="tel:07972741546" class="btn btn-secondary btn-block">Call Hotline</a>
           <a href="https://wa.me/917972741546?text=Hello%20Pushpa%20Automation%2C%20I%20want%20to%20inquire%20about%20panel%20availability." target="_blank" rel="noopener" class="btn btn-primary btn-block">WhatsApp Us ➔</a>
         </div>
-      `);
+      `, 'TRUST_METRIC', type);
     });
   });
 
-  // 3. Hero Sub-Bento Category Cards
-  document.querySelectorAll('.clickable-category-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const cat = card.dataset.category;
-      const targetSection = document.getElementById('products');
-      if (targetSection) {
-        targetSection.scrollIntoView({ behavior: 'smooth' });
-        const pill = document.querySelector(`.filter-pill[data-filter="${cat}"]`);
-        if (pill) pill.click();
-      }
-    });
-  });
-
-  // 4. OLED Screen Diagnostics Click
-  const oledTrigger = document.getElementById('te-oled-trigger');
-  if (oledTrigger) {
-    oledTrigger.addEventListener('click', () => {
-      openCustomModal(`
-        <span class="section-pill">Live SCADA Diagnostics</span>
-        <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">CP-9000 VFD & PLC Telemetry Engine</h2>
-        <p style="color:var(--text-muted); margin-bottom:16px;">This controller integrates real-time frequency synthesis, load amperage feedback, and optical detection interrupts.</p>
-        <div style="background:#090a0e; padding:16px; border-radius:10px; font-family:var(--font-mono); font-size:0.8rem; color:#cbd5e1; display:flex; flex-direction:column; gap:6px; margin-bottom:20px;">
-          <div>STATUS: <span style="color:#10b981;">ALL NODES SYNCHRONIZED (OK)</span></div>
-          <div>CYCLE TIME: <span style="color:#ffffff;">1.2 ms</span></div>
-          <div>COMM BUS: <span style="color:#ffffff;">MODBUS RTU / ETHERNET IP</span></div>
-        </div>
-        <button class="btn btn-primary btn-block" onclick="document.getElementById('modal-close-btn').click();">Return to Sandbox</button>
-      `);
-    });
-  }
-
-  // 5. Sensor Sandbox Cards Click
+  // 6. Sensor Sandbox Cards Click
   const proxCard = document.getElementById('sandbox-prox-card');
   if (proxCard) {
+    proxCard.classList.add('clickable-element');
     proxCard.addEventListener('click', (e) => {
       if (e.target.tagName.toLowerCase() === 'input') return;
       openCustomModal(`
         <span class="section-pill">Sensor Engineering Guide</span>
         <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">M18 Inductive Proximity Sensor</h2>
         <p style="color:var(--text-muted); margin-bottom:16px;">High-frequency electromagnetic field oscillation detects iron, steel, and alloy targets without physical contact.</p>
-        <div style="background:#090a0e; padding:16px; border-radius:10px; margin-bottom:20px; font-size:0.84rem; color:#ffffff;">
+        <div style="background:#090a0e; padding:16px; border-radius:10px; border:1px solid rgba(0,240,255,0.2); margin-bottom:20px; font-size:0.84rem; color:#ffffff;">
           <p>• Sensing Distance: 8.0 mm (Adjustable with amplifier)</p>
           <p>• Output: PNP / NPN Normally Open (NO) & Normally Closed (NC)</p>
           <p>• Ingress Protection: IP67 Oil & Vibration Proof</p>
         </div>
         <a href="https://wa.me/917972741546?text=Hello%20Pushpa%20Automation%2C%20I%20need%20a%20quote%20for%20M18%20Proximity%20Sensors." target="_blank" rel="noopener" class="btn btn-primary btn-block">Inquire Sensor Pack on WhatsApp ➔</a>
-      `);
+      `, 'SENSOR_LAB', 'M18_PROXIMITY');
     });
   }
 
   const oscCard = document.getElementById('sandbox-osc-card');
   if (oscCard) {
+    oscCard.classList.add('clickable-element');
     oscCard.addEventListener('click', (e) => {
       if (e.target.tagName.toLowerCase() === 'canvas') return;
       openCustomModal(`
@@ -879,12 +949,13 @@ function initAllClickableCards() {
         <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">Dual-Channel Oscillograph Monitor</h2>
         <p style="color:var(--text-muted); margin-bottom:16px;">Monitors vibration harmonic distortion and three-phase voltage balance across industrial motors in real time.</p>
         <a href="https://wa.me/917972741546?text=Hello%20Pushpa%20Automation%2C%20I%20want%20to%20learn%20more%20about%20SCADA%20monitoring." target="_blank" rel="noopener" class="btn btn-primary btn-block">Request SCADA Consultation ➔</a>
-      `);
+      `, 'SENSOR_LAB', 'OSCILLOSCOPE');
     });
   }
 
-  // 6. Verified Review Cards Click
+  // 7. Verified Review Cards Click
   document.querySelectorAll('.clickable-review').forEach(rev => {
+    rev.classList.add('clickable-element');
     rev.addEventListener('click', () => {
       const author = rev.dataset.author;
       openCustomModal(`
@@ -897,26 +968,47 @@ function initAllClickableCards() {
         <a href="https://www.google.com/search?q=pushpa+automation+and+robotics+industries" target="_blank" rel="noopener" class="btn btn-primary btn-block">
           View on Google Maps ↗
         </a>
-      `);
+      `, 'CUSTOMER_REVIEW', author);
     });
   });
 
-  // 7. Working Hours Click
-  const hoursBtn = document.getElementById('facility-live-status');
-  if (hoursBtn) {
-    hoursBtn.addEventListener('click', () => {
-      openCustomModal(`
-        <span class="section-pill">Facility Schedule</span>
-        <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">MIDC Bhosari Plant Operating Hours</h2>
-        <div style="background:#090a0e; padding:16px; border-radius:10px; margin-bottom:20px; font-size:0.85rem; color:#ffffff;">
-          <p>• Monday – Saturday: <strong>9:00 AM – 6:00 PM</strong> (Active Production)</p>
-          <p>• Sunday: Closed for Scheduled Maintenance</p>
-          <p>• 24/7 Emergency Breakdown Assistance: <a href="tel:07972741546" style="color:var(--accent-red);">079727 41546</a></p>
+  // 8. Interactive Telemetry Tracer Log Modal
+  const telemetryFeed = document.getElementById('hud-telemetry-feed');
+  if (telemetryFeed) {
+    telemetryFeed.classList.add('clickable-element');
+    telemetryFeed.addEventListener('click', () => {
+      const logsHtml = (window.__telemetryLogs || []).map(l => `
+        <div style="padding:8px 12px; border-bottom:1px solid rgba(0,240,255,0.1); display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
+          <div><span style="color:#00f0ff; font-weight:bold;">[${l.category}]</span> <span style="color:#ffffff;">${l.action}</span> <span style="color:#94a3b8;">${l.payload}</span></div>
+          <span style="color:#38bdf8; font-size:0.65rem;">${l.timestamp}</span>
         </div>
-        <a href="tel:07972741546" class="btn btn-primary btn-block">Call Plant Office Now ➔</a>
-      `);
+      `).join('') || '<div style="padding:14px; text-align:center; color:#94a3b8;">No events logged yet. Interact with the panels!</div>';
+
+      openCustomModal(`
+        <span class="section-pill">Live SCADA Event Tracer</span>
+        <h2 style="font-size:1.6rem; color:#ffffff; margin:8px 0;">Operational Event Log Stream</h2>
+        <p style="color:var(--text-muted); margin-bottom:16px;">Chronological trace of client user interactions, switch toggles, and component inspections.</p>
+        <div style="background:#040914; border:1px solid rgba(0,240,255,0.25); border-radius:8px; max-height:280px; overflow-y:auto; font-family:var(--font-mono); margin-bottom:20px;">
+          ${logsHtml}
+        </div>
+        <button class="btn btn-primary btn-block" onclick="document.getElementById('modal-close-btn').click();">
+          Close Diagnostics Log
+        </button>
+      `, 'TELEMETRY_LOG', 'VIEW_EVENT_STREAM');
     });
   }
+
+  // Global Click Tracing on All Interactive Elements
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button, a, input, select, .filter-pill, .btn-hud-primary, .btn-hud-secondary');
+    if (btn) {
+      const tag = btn.tagName.toLowerCase();
+      const text = (btn.textContent || btn.value || btn.getAttribute('aria-label') || '').trim().substring(0, 30);
+      window.traceEvent('USER_CLICK', `${tag.toUpperCase()}`, text);
+    }
+  });
+
+  window.traceEvent('SYSTEM_READY', 'INITIALIZE_TELEMETRY', 'SCADA_NODES_ONLINE');
 }
 
 /* ==========================================================================
