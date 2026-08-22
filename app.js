@@ -1045,7 +1045,7 @@ function initAudioControls() {
 }
 
 /* ==========================================================================
-   9. CONTACT FORM SUBMISSION
+   9. CONTACT FORM SUBMISSION (DIRECT WHATSAPP RFQ TRANSMISSION)
    ========================================================================== */
 function initContactForm() {
   const form = document.getElementById('contact-form');
@@ -1054,15 +1054,37 @@ function initContactForm() {
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (window.soundFX) window.soundFX.click();
+      if (window.soundFX && typeof window.soundFX.click === 'function') window.soundFX.click();
 
-      const name = form.querySelector('[name="name"]').value;
-      const phone = form.querySelector('[name="phone"]').value;
+      const name = (form.querySelector('[name="name"]')?.value || '').trim();
+      const phone = (form.querySelector('[name="phone"]')?.value || '').trim();
+      const catEl = form.querySelector('[name="category"]');
+      const category = catEl ? catEl.options[catEl.selectedIndex].text : 'Industrial Control Panel';
+      const requirement = (form.querySelector('[name="requirement"]')?.value || '').trim();
+
+      const waMessage = 
+`*NEW ENGINEERING INQUIRY // PUSHPA AUTOMATION*
+----------------------------------------
+*Client / Org:* ${name}
+*Contact Phone:* ${phone}
+*Panel Category:* ${category}
+*Project Specifications:*
+${requirement}
+----------------------------------------
+_Transmitted via Pushpa Automation Portal_`;
+
+      const waUrl = `https://wa.me/917972741546?text=${encodeURIComponent(waMessage)}`;
 
       if (alertBox) {
-        alertBox.innerHTML = `<strong>✓ Inquiry Transmitted!</strong> Thank you ${name}. Our automation engineers at MIDC Bhosari will contact ${phone} shortly.`;
+        alertBox.innerHTML = `
+          <strong>✓ Connecting to WhatsApp...</strong><br>
+          Thank you <strong>${name}</strong>. If WhatsApp did not open automatically, <a href="${waUrl}" target="_blank" rel="noopener" style="color:var(--accent-cyan, #00f0ff); text-decoration:underline; font-weight:700;">click here to send your inquiry</a>.
+        `;
         alertBox.style.display = 'block';
       }
+
+      // Open WhatsApp in new tab
+      window.open(waUrl, '_blank');
 
       form.reset();
     });
