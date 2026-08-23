@@ -1,24 +1,38 @@
 {
-  "name": "pushpa-automation-main",
-  "version": "1.0.0",
-  "description": "> **Premier Industrial Automation, Custom Control Panel & Sensor Engineering Website** > 📍 Rajdhani Industrial Complex, F1, EL Block, MIDC, Bhosari, Pimpri-Chinchwad, Pune, Maharashtra 411026 > ⭐ **5.0 / 5.0 Rating** (106+ Verified Google Reviews) | 📞 079727 41546",
-  "main": "app.js",
+  "name": "pushpa-automation-nextjs",
+  "version": "2.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next build && next export",
+    "analyze": "ANALYZE=true next build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BuddhankJadhao-byte/pushpa-automation.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/BuddhankJadhao-byte/pushpa-automation/issues"
-  },
-  "homepage": "https://github.com/BuddhankJadhao-byte/pushpa-automation#readme",
   "dependencies": {
-    "eve": "^0.44.1"
+    "@react-three/drei": "^9.102.0",
+    "@react-three/fiber": "^8.15.6",
+    "@react-three/postprocessing": "^6.37.4",
+    "framer-motion": "^11.10.0",
+    "framer-motion-3d": "^5.1.3",
+    "gsap": "^3.12.5",
+    "next": "14.2.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.166.1",
+    "zustand": "^4.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.164.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.13",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.0"
   }
 }

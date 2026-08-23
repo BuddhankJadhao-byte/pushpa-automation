@@ -128,10 +128,13 @@
 
             <div class="hero-copy-block">
               <h1 class="hero-hud-title" id="hero-typing-title">
-                <span id="typing-text">INDUSTRIAL PLC &amp; SCADA <span class="phosphor-text">CONTROL PANELS</span></span><span class="typing-cursor">_</span>
+                <span id="typing-text">INDUSTRIAL PLC &amp; SCADA <span class="phosphor-text">CONTROL
+                    PANELS</span></span><span class="typing-cursor">_</span>
               </h1>
               <p class="hero-hud-lead">
-                Pushpa Automation &amp; Robotics Industries manufactures high-reliability PLC HMI control panels, VFD motion systems, and custom automation architectures for smart manufacturing plants in MIDC Bhosari and nationwide.
+                Pushpa Automation &amp; Robotics Industries manufactures high-reliability PLC HMI control panels, VFD
+                motion systems, and custom automation architectures for smart manufacturing plants in MIDC Bhosari and
+                nationwide.
               </p>
 
               <!-- Live Telemetry Parameter Strip -->
@@ -168,64 +171,98 @@
             </div>
           </div>
 
-          <!-- Right Column: Operational SCADA Master HUD (Interactive 3D Tilt Card) -->
-          <div class="hero-scada-hud-pane hud-panel" data-tilt-panel id="hero-scada-card">
-            <!-- Top HUD Bezel Bar -->
+          <!-- Right Column: Real-Time 3D WebGL Exploded Control Cabinet & SCADA Engine -->
+          <div class="hero-3d-exploded-pane hud-panel" id="hero-exploded-panel">
+            <!-- Top HUD Bezel Bar with Interactive 3D Controls -->
             <div class="scada-bezel-header">
               <div class="scada-node-info">
-                <span class="scada-icon-dot"></span>
-                <span class="scada-title">LIVE PLANT TELEMETRY HUD</span>
+                <span class="scada-icon-dot pulse-cyan"></span>
+                <span class="scada-title">3D REAL-TIME PHYSICAL CAD // PLC &amp; SCADA HARDWARE</span>
               </div>
-              <div class="scada-mode-pill">
-                <span class="mode-led pulse-green"></span>
-                <span class="mode-text">CYCLIC SCAN: 1.18 ms</span>
-              </div>
-            </div>
-
-            <!-- Master Telemetry Readout Grid (JS Dynamically Ticking Numbers) -->
-            <div class="scada-metrics-matrix">
-              <div class="hud-metric-cell">
-                <span class="cell-label">3-PHASE VOLTAGE</span>
-                <span class="cell-val accent-amber" id="live-telemetry-voltage">415.4 V</span>
-                <span class="cell-sub">L1-L2-L3 RMS ±0.2%</span>
-              </div>
-              <div class="hud-metric-cell">
-                <span class="cell-label">GRID FREQUENCY</span>
-                <span class="cell-val accent-green" id="live-telemetry-freq">50.02 Hz</span>
-                <span class="cell-sub">JITTER &lt; 0.01 Hz</span>
-              </div>
-              <div class="hud-metric-cell">
-                <span class="cell-label">VFD MOTOR SPEED</span>
-                <span class="cell-val accent-cyan" id="live-telemetry-rpm">1,498 RPM</span>
-                <span class="cell-sub">CLOSED-LOOP PID</span>
-              </div>
-              <div class="hud-metric-cell">
-                <span class="cell-label">CURRENT LOAD</span>
-                <span class="cell-val accent-green" id="live-telemetry-amps">8.84 A</span>
-                <span class="cell-sub">NOMINAL / BALANCED</span>
+              <div class="hero-3d-action-pills">
+                <button id="btn-3d-autorotate-toggle" class="btn-3d-pill active" title="Toggle Continuous 360° 3D Orbit">
+                  <span class="pill-dot"></span> 360° ORBIT
+                </button>
+                <button id="btn-3d-explode-toggle" class="btn-3d-pill explode-btn" title="Toggle 3D Hardware Explosion">
+                  ⚡ EXPLODE 3D VIEW
+                </button>
               </div>
             </div>
 
-            <!-- Live Dynamic Signal Waveform Oscillograph Canvas -->
-            <div class="scada-wave-container">
-              <div class="wave-header">
-                <span class="wave-label">LIVE SIGNAL OSCILLOGRAPH (CH1: FLUX • CH2: CURRENT)</span>
-                <span class="wave-fps">60 FPS REAL-TIME</span>
+            <!-- 3D Interactive Stage Canvas Viewport -->
+            <div class="hero-3d-stage-container" id="ghost-panel-stage">
+              <canvas id="hero-3d-canvas" class="hero-3d-viewport-canvas"></canvas>
+              
+              <!-- 3D Drag Orbit Hint Overlay -->
+              <div class="hero-3d-drag-hint">
+                <span class="drag-icon">🖱️</span>
+                <span>CLICK &amp; DRAG TO ROTATE 360° • SCROLL TO EXPLODE</span>
               </div>
-              <canvas id="hero-wave-canvas" width="460" height="100"></canvas>
+
+              <!-- 3D Floating Hardware Callout Badges -->
+              <div class="hero-3d-callouts-overlay">
+                <div class="ghost-callout-pill pill-pos-1" data-trigger="0.30">
+                  <span class="pill-beacon cyan"></span>
+                  <div class="pill-text">
+                    <strong>CRCA Enclosure</strong>
+                    <small>IP65 Cold-Rolled 1.6mm</small>
+                  </div>
+                </div>
+
+                <div class="ghost-callout-pill pill-pos-2" data-trigger="0.45">
+                  <span class="pill-beacon green"></span>
+                  <div class="pill-text">
+                    <strong>TS35 DIN Rails</strong>
+                    <small>Slotted Ducts &amp; Terminals</small>
+                  </div>
+                </div>
+
+                <div class="ghost-callout-pill pill-pos-3" data-trigger="0.60">
+                  <span class="pill-beacon violet"></span>
+                  <div class="pill-text">
+                    <strong>32-Bit PLC CPU</strong>
+                    <small>200MHz Real-Time Scan</small>
+                  </div>
+                </div>
+
+                <div class="ghost-callout-pill pill-pos-4" data-trigger="0.70">
+                  <span class="pill-beacon amber"></span>
+                  <div class="pill-text">
+                    <strong>VFD Inverter Drive</strong>
+                    <small>Closed-Loop 50.00 Hz</small>
+                  </div>
+                </div>
+
+                <div class="ghost-callout-pill pill-pos-5" data-trigger="0.80">
+                  <span class="pill-beacon cyan"></span>
+                  <div class="pill-text">
+                    <strong>10.1" HMI Touchscreen</strong>
+                    <small>Real-Time SCADA Gauges</small>
+                  </div>
+                </div>
+
+                <div class="ghost-callout-pill pill-pos-6" data-trigger="0.90">
+                  <span class="pill-beacon amber"></span>
+                  <div class="pill-text">
+                    <strong>M18 &amp; RTD Sensors</strong>
+                    <small>Delta Proximity &amp; Pt100</small>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Interactive HUD Mode & Test Bar -->
-            <div class="scada-control-bar">
-              <button class="scada-mode-btn active" data-mode="normal" id="btn-hud-mode-auto">
-                <span class="btn-dot"></span> AUTO SCAN
-              </button>
-              <button class="scada-mode-btn" data-mode="boost" id="btn-hud-mode-boost">
-                <span class="btn-dot amber"></span> 60Hz BOOST
-              </button>
-              <button class="scada-mode-btn" data-mode="sync" id="btn-hud-mode-sync">
-                <span class="btn-dot cyan"></span> SYNC SCADA
-              </button>
+            <!-- Bottom HUD Status & Explosion Progress Scrubber -->
+            <div class="ghost-hud-footer">
+              <div class="ghost-hud-status">
+                <span class="ghost-status-beacon pulse-cyan"></span>
+                <span class="ghost-status-title" id="ghost-status-text">3D REAL-TIME MODEL ACTIVE • DRAG OR SCROLL TO EXPLODE</span>
+              </div>
+              <div class="ghost-hud-progress-wrap">
+                <div class="ghost-hud-track">
+                  <div class="ghost-hud-bar" id="ghost-progress-bar" style="width: 0%;"></div>
+                </div>
+                <span class="ghost-hud-val" id="ghost-progress-val">0%</span>
+              </div>
             </div>
           </div>
         </div>
@@ -236,12 +273,14 @@
         <div class="container trust-strip-container">
           <!-- Animated Numerical Metric Tickers -->
           <div class="trust-metrics-cluster">
-            <div class="trust-metric-item clickable-metric" data-metric="deployed" title="Click to view deployment credentials">
+            <div class="trust-metric-item clickable-metric" data-metric="deployed"
+              title="Click to view deployment credentials">
               <span class="trust-metric-num accent-green" id="trust-val-deployed">1,500+</span>
               <span class="trust-metric-label">Panels Deployed Nationwide ↗</span>
             </div>
             <div class="trust-divider"></div>
-            <div class="trust-metric-item clickable-metric" data-metric="rating" title="Click to view verified Google reviews">
+            <div class="trust-metric-item clickable-metric" data-metric="rating"
+              title="Click to view verified Google reviews">
               <span class="trust-metric-num accent-amber" id="trust-val-rating">5.0 ★</span>
               <span class="trust-metric-label">Google Rating (106+ Reviews) ↗</span>
             </div>
@@ -793,7 +832,8 @@
   </footer>
 
   <!-- FLOATING SCADA TELEMETRY TRACER HUD FEED -->
-  <div id="hud-telemetry-feed" class="hud-telemetry-feed-bar" title="Live SCADA Interaction Telemetry Tracer (Click to view log)">
+  <div id="hud-telemetry-feed" class="hud-telemetry-feed-bar"
+    title="Live SCADA Interaction Telemetry Tracer (Click to view log)">
     <div class="telemetry-feed-dot"></div>
     <div class="telemetry-feed-log" id="telemetry-feed-text">
       <span class="trace-tag">[SYSTEM READY]</span> SCADA TELEMETRY ACTIVE • MIDC BHOSARI
@@ -808,6 +848,9 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+  <!-- 3D Real-Time Exploded Hero Engine -->
+  <script src="hero-3d-exploded-engine.js"></script>
 
   <!-- Core Application Scripts -->
   <script src="sound-fx.js"></script>

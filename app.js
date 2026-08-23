@@ -764,7 +764,7 @@ function openSpecs(prodId) {
    ========================================================================== */
 window.__telemetryLogs = [];
 
-window.traceEvent = function(category, action, payload = '') {
+window.traceEvent = function (category, action, payload = '') {
   const timestamp = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const entry = { timestamp, category: category.toUpperCase(), action: action.toUpperCase(), payload };
   window.__telemetryLogs.unshift(entry);
@@ -1186,8 +1186,8 @@ function initContactForm() {
       const category = catEl ? catEl.options[catEl.selectedIndex].text : 'Industrial Control Panel';
       const requirement = (form.querySelector('[name="requirement"]')?.value || '').trim();
 
-      const waMessage = 
-`*NEW ENGINEERING INQUIRY // PUSHPA AUTOMATION*
+      const waMessage =
+        `*NEW ENGINEERING INQUIRY // PUSHPA AUTOMATION*
 ----------------------------------------
 *Client / Org:* ${name}
 *Contact Phone:* ${phone}

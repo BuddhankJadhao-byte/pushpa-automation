@@ -1,5 +1,6 @@
 import { defineAgent } from "eve";
 
 export default defineAgent({
-  model: "zai/glm-5.2",
+  model: "meta/llama-3.1-8b-instruct",
 });
+
