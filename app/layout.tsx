@@ -2,18 +2,17 @@ import type { Metadata, Viewport } from 'next'
 import { headers } from 'next/headers'
 import { Archivo, Geist, Geist_Mono } from 'next/font/google'
 import { Providers } from '@/components/providers'
+import { SITE_URL } from '@/lib/site'
 import './globals.css'
 
 const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], variable: '--font-archivo', display: 'swap' })
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swap' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', display: 'swap' })
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'http://localhost:3000')
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
+  applicationName: 'Pushpa Automation',
+  category: 'Industrial automation',
   title: {
     default: 'Pushpa Automation & Robotics Industries — Control Panels, MIDC Bhosari, Pune',
     template: '%s · Pushpa Automation & Robotics',
@@ -35,7 +34,6 @@ export const metadata: Metadata = {
     siteName: 'Pushpa Automation & Robotics Industries',
     title: 'Pushpa Automation & Robotics Industries',
     description: 'Precision control panels engineered in MIDC Bhosari, Pune. Rated 5.0 on Google.',
-    images: [{ url: '/images/plc_hmi_panel.jpg', width: 1200, height: 896, alt: 'PLC HMI control panel' }],
   },
   twitter: { card: 'summary_large_image' },
   alternates: { canonical: '/' },

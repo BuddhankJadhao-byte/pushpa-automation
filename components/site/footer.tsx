@@ -41,12 +41,12 @@ export function Footer({ settings, categories }: { settings: Settings; categorie
             <h3 className="font-mono text-[11px] uppercase tracking-[0.2em] text-subtle">Explore</h3>
             <ul className="mt-5 space-y-3 text-sm">
               {[
-                ['#capabilities', 'Capabilities'],
-                ['#products', 'Panels'],
-                ['#anatomy', 'Inside a panel'],
-                ['#estimate', 'Instant estimate'],
-                ['#reviews', 'Reviews'],
-                ['#faq', 'FAQ'],
+                ['/#capabilities', 'Capabilities'],
+                ['/#products', 'Panels'],
+                ['/#anatomy', 'Inside a panel'],
+                ['/#estimate', 'Instant estimate'],
+                ['/#reviews', 'Reviews'],
+                ['/#faq', 'FAQ'],
               ].map(([href, label]) => (
                 <li key={href}>
                   <a href={href} className="group inline-flex items-center gap-1 text-muted transition-colors hover:text-fg">
@@ -62,7 +62,7 @@ export function Footer({ settings, categories }: { settings: Settings; categorie
             <ul className="mt-5 space-y-3 text-sm">
               {categories.map((c) => (
                 <li key={c}>
-                  <a href="#products" className="text-muted transition-colors hover:text-fg">
+                  <a href="/#products" className="text-muted transition-colors hover:text-fg">
                     {c}
                   </a>
                 </li>

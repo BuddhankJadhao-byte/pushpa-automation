@@ -6,8 +6,8 @@ import { settingsSchema } from '@/lib/schemas'
 
 export const CONTENT_TAG = 'site-content'
 
-const PRODUCT_COLUMNS = 'id, name, category, price, summary, specs, tags, oem, image'
-const PROJECT_COLUMNS = 'id, title, client, location, year, summary, tags, image'
+const PRODUCT_COLUMNS = 'id, slug, name, category, price, summary, specs, tags, oem, image'
+const PROJECT_COLUMNS = 'id, slug, title, client, location, year, summary, tags, image'
 const REVIEW_COLUMNS = 'id, author, role, rating, body'
 
 async function loadContent(): Promise<SiteContent> {

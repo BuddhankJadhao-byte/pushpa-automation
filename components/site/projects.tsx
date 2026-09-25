@@ -8,6 +8,7 @@ import type { Project } from '@/lib/content'
 import { SectionHeading } from './section-heading'
 import { Dialog } from './dialog'
 import { Media } from './media'
+import { openInPlace } from './products'
 
 export function Projects({ projects }: { projects: Project[] }) {
   const [openId, setOpenId] = useState<string | null>(null)
@@ -32,9 +33,9 @@ export function Projects({ projects }: { projects: Project[] }) {
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.9, delay: (i % 3) * 0.08, ease: EASE_OUT }}
           >
-            <button
-              type="button"
-              onClick={() => setOpenId(p.id)}
+            <a
+              href={`/work/${p.slug}`}
+              onClick={(e) => openInPlace(e, () => setOpenId(p.id))}
               data-cursor="Open"
               className="group relative block size-full overflow-hidden rounded-[28px] border border-line text-left"
             >
@@ -55,7 +56,7 @@ export function Projects({ projects }: { projects: Project[] }) {
                 <h3 className={`mt-2 font-display font-semibold leading-tight tracking-tight ${i === 0 ? 'text-3xl' : 'text-xl'}`}>{p.title}</h3>
                 {p.client && <p className="mt-1 text-sm text-muted">{p.client}</p>}
               </div>
-            </button>
+            </a>
           </motion.li>
         ))}
       </ul>
@@ -84,6 +85,9 @@ export function Projects({ projects }: { projects: Project[] }) {
                   ))}
                 </ul>
               )}
+              <a href={`/work/${open.slug}`} className="mt-8 inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
+                Full project page →
+              </a>
             </div>
           </>
         )}

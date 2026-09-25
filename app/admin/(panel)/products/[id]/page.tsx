@@ -25,7 +25,15 @@ export default async function EditProduct({ params }: { params: Promise<{ id: st
 
   return (
     <>
-      <PageHeader title="Edit product" description={product.name} />
+      <PageHeader
+        title="Edit product"
+        description={product.name}
+        action={
+          <a href={`/products/${product.slug}`} target="_blank" rel="noopener" className="text-sm text-accent hover:underline">
+            View on website ↗
+          </a>
+        }
+      />
       <ProductForm product={product} categories={categories} />
     </>
   )

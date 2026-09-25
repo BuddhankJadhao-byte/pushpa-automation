@@ -75,6 +75,21 @@ test('the confirmed owner can create, see drafts, update and delete', async () =
   assert.equal(del.rows.length, 1)
 })
 
+test('web addresses (slugs) are generated, unique, and stable after renames', async () => {
+  const add = (name, slug = null) =>
+    as('authenticated', OWNER, `insert into public.products (name, category, slug) values ($1, 'PLC', $2) returning id, slug`, [name, slug])
+  const a = (await add('VFD Panel — 15 HP!')).rows[0]
+  assert.equal(a.slug, 'vfd-panel-15-hp')
+  const b = (await add('VFD panel 15 HP')).rows[0]
+  assert.match(b.slug, /^vfd-panel-15-hp-[0-9a-f]{6}$/, 'duplicate names get a short suffix')
+  assert.equal((await add('Starter', 'plc-hmi-automated-control-panel')).rows[0].slug, 'plc-hmi-automated-control-panel')
+  await as('authenticated', OWNER, `update public.products set name = 'Renamed' where id = $1`, [a.id])
+  const { rows } = await as('anon', null, 'select slug from public.products where id = $1', [a.id])
+  assert.equal(rows[0].slug, 'vfd-panel-15-hp')
+  const p = await as('authenticated', OWNER, `insert into public.projects (title) values ('Water Plant, Chakan') returning slug`)
+  assert.equal(p.rows[0].slug, 'water-plant-chakan')
+})
+
 test('database rejects oversized content even from the owner', async () => {
   await assert.rejects(
     as('authenticated', OWNER, `insert into public.products (name, category) values ($1, 'PLC')`, ['x'.repeat(500)]),

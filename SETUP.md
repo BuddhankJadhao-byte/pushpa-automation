@@ -73,6 +73,20 @@ Supabase's built-in email service only delivers to **members of your Supabase or
 2. Enter the 6-digit code from the inbox. Check spam the first time.
 3. Go to **Products** and click **Import the 8 starter products**, then go to **Reviews** and click **Import the 3 existing reviews**. After that, edit, hide or delete anything you like.
 
+## 7. Your own domain + Google (SEO)
+
+1. **Vercel → pushpa-automation-main → Settings → Domains → Add** your domain (and the `www` version). Add the DNS records Vercel shows at your domain company. Usually that means an `A` record `@` → `76.76.21.21` and a `CNAME` record `www` → `cname.vercel-dns.com`. Keep any `MX` (email) records as they are.
+2. Set the environment variable `NEXT_PUBLIC_SITE_URL` to `https://yourdomain.com` and redeploy.
+3. **Google Search Console:** add the domain, verify it with the DNS `TXT` record, then submit `https://yourdomain.com/sitemap.xml`.
+4. **Bing Webmaster Tools:** import from Search Console. Bing also feeds ChatGPT search and Copilot.
+5. **Google Business Profile:** set the website to your domain. Keep the name, address and phone exactly the same everywhere (IndiaMART, Justdial, YouTube).
+
+What the site already does for SEO and AI search:
+
+- Every product and project gets its own page, for example `/products/plc-hmi-automated-control-panel`.
+- It publishes structured data for Google: business details and hours, products with prices in ₹, FAQ and breadcrumbs.
+- It has a sitemap that updates itself, a share-preview image, and `/llms.txt` (a plain summary of the business for AI assistants).
+
 ---
 
 # Owner guide (no code needed)
@@ -90,6 +104,7 @@ Supabase's built-in email service only delivers to **members of your Supabase or
 | Show a notice at the top of the site (holiday, offer) | **Settings → Announcement bar**. Leave it empty to hide it. |
 
 - Changes appear on the website as soon as you press **Save and publish**.
+- Every product or project you add automatically gets its own web page, is added to the Google sitemap, and gets structured data for Google. Good photos and a few lines of real detail help it rank.
 - Photos taken on a phone are shrunk automatically before upload, so there is no need to resize them.
 - Delete enquiries once a job is closed, so you don't keep people's details longer than needed. **Enquiries → Delete closed** removes them in one go.
 - Always use **Sign out** on shared computers.

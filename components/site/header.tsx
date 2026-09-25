@@ -11,12 +11,12 @@ type Props = { settings: Pick<Settings, 'phone' | 'whatsapp'>; hasProjects: bool
 
 export function Header({ settings, hasProjects }: Props) {
   const nav = [
-    { href: '#capabilities', label: 'Capabilities' },
-    { href: '#products', label: 'Panels' },
-    ...(hasProjects ? [{ href: '#work', label: 'Our work' }] : []),
-    { href: '#estimate', label: 'Estimate' },
-    { href: '#reviews', label: 'Reviews' },
-    { href: '#contact', label: 'Contact' },
+    { href: '/#capabilities', label: 'Capabilities' },
+    { href: '/#products', label: 'Panels' },
+    ...(hasProjects ? [{ href: '/#work', label: 'Our work' }] : []),
+    { href: '/#estimate', label: 'Estimate' },
+    { href: '/#reviews', label: 'Reviews' },
+    { href: '/#contact', label: 'Contact' },
   ]
   const [active, setActive] = useState('')
   const [hidden, setHidden] = useState(false)
@@ -33,7 +33,7 @@ export function Header({ settings, hasProjects }: Props) {
   // Highlight the section currently in the middle of the viewport.
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(`#${e.target.id}`)),
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(`/#${e.target.id}`)),
       { rootMargin: '-45% 0px -50% 0px' },
     )
     document.querySelectorAll('main section[id]').forEach((s) => observer.observe(s))
@@ -61,7 +61,7 @@ export function Header({ settings, hasProjects }: Props) {
               : 'border-transparent bg-transparent'
           }`}
         >
-          <a href="#top" className="flex shrink-0 items-center gap-3" aria-label="Pushpa Automation — back to top">
+          <a href="/#top" className="flex shrink-0 items-center gap-3" aria-label="Pushpa Automation — back to top">
             <Logo className="h-9 w-auto text-fg" />
           </a>
 
@@ -99,7 +99,7 @@ export function Header({ settings, hasProjects }: Props) {
             </a>
             <Magnetic>
               <a
-                href="#estimate"
+                href="/#estimate"
                 className="hidden items-center gap-1.5 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-canvas transition-[background-color,transform] duration-200 hover:bg-accent-strong active:scale-[0.97] sm:flex"
               >
                 Get estimate

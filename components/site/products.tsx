@@ -9,6 +9,16 @@ import { SectionHeading } from './section-heading'
 import { ProductDialog } from './product-dialog'
 import { Media } from './media'
 
+/**
+ * Cards are real links (search engines follow them to the product page); a plain click
+ * opens the animated popup instead. Ctrl/Cmd/middle-click still opens the page.
+ */
+export function openInPlace(e: React.MouseEvent, open: () => void) {
+  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+  e.preventDefault()
+  open()
+}
+
 export function Products({ products, settings }: { products: Product[]; settings: Settings }) {
   const categories = ['All', ...new Set(products.map((p) => p.category))]
   const [filter, setFilter] = useState('All')
@@ -71,9 +81,9 @@ export function Products({ products, settings }: { products: Product[]; settings
                   exit={{ opacity: 0, scale: 0.94 }}
                   transition={{ duration: 0.45, ease: EASE_OUT }}
                 >
-                  <motion.button
-                    type="button"
-                    onClick={() => setOpenId(p.id)}
+                  <motion.a
+                    href={`/products/${p.slug}`}
+                    onClick={(e) => openInPlace(e, () => setOpenId(p.id))}
                     data-cursor="View"
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -107,7 +117,7 @@ export function Products({ products, settings }: { products: Product[]; settings
                         {p.tags[0] && <span className="text-right font-mono text-[11px] uppercase tracking-wider text-subtle">{p.tags[0]}</span>}
                       </div>
                     </div>
-                  </motion.button>
+                  </motion.a>
                 </motion.li>
               ))}
             </AnimatePresence>

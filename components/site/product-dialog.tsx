@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Check, MessageCircle, Phone } from 'lucide-react'
+import { ArrowUpRight, Check, MessageCircle, Phone } from 'lucide-react'
 import { EASE_OUT } from '@/components/motion/primitives'
 import { telLink, whatsappLink, type Product, type Settings } from '@/lib/content'
 import { Dialog } from './dialog'
@@ -61,11 +61,14 @@ export function ProductDialog({
               </ul>
             )}
 
-            <div className="mt-8 flex items-end justify-between border-t border-line pt-6">
+            <div className="mt-8 flex items-end justify-between gap-4 border-t border-line pt-6">
               <div>
                 <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-subtle">Indicative price</p>
                 <p className="mt-1 font-display text-3xl font-bold text-accent">{product.price || 'On request'}</p>
               </div>
+              <a href={`/products/${product.slug}`} className="group inline-flex items-center gap-1 text-sm text-muted hover:text-fg">
+                Full details page <ArrowUpRight className="size-4 transition-transform group-hover:rotate-45" aria-hidden />
+              </a>
             </div>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <a

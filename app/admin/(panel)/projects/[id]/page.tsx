@@ -23,7 +23,15 @@ export default async function EditProject({ params }: { params: Promise<{ id: st
 
   return (
     <>
-      <PageHeader title="Edit project" description={project.title} />
+      <PageHeader
+        title="Edit project"
+        description={project.title}
+        action={
+          <a href={`/work/${project.slug}`} target="_blank" rel="noopener" className="text-sm text-accent hover:underline">
+            View on website ↗
+          </a>
+        }
+      />
       <ProjectForm project={project} />
     </>
   )

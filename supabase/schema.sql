@@ -101,6 +101,52 @@ create table if not exists public.site_settings (
   updated_at timestamptz not null default now()
 );
 
+-- Web addresses: /products/<slug> and /work/<slug>. Made once from the name when a row is
+-- created and never changed afterwards, so links shared on WhatsApp or indexed by Google keep working.
+alter table public.products add column if not exists slug text;
+alter table public.projects add column if not exists slug text;
+
+create or replace function public.slugify(value text)
+returns text
+language sql
+immutable
+set search_path = ''
+as $$
+  select coalesce(nullif(left(trim(both '-' from regexp_replace(lower(coalesce(value, '')), '[^a-z0-9]+', '-', 'g')), 80), ''), 'item');
+$$;
+
+create or replace function public.set_slug()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+declare
+  base text;
+  taken boolean;
+begin
+  base := public.slugify(coalesce(nullif(new.slug, ''), to_jsonb(new) ->> 'name', to_jsonb(new) ->> 'title'));
+  execute format('select exists (select 1 from public.%I where slug = $1)', tg_table_name) into taken using base;
+  new.slug := case when taken then base || '-' || left(replace(new.id::text, '-', ''), 6) else base end;
+  return new;
+end;
+$$;
+
+update public.products set slug = public.slugify(name) || '-' || left(replace(id::text, '-', ''), 6) where slug is null;
+update public.projects set slug = public.slugify(title) || '-' || left(replace(id::text, '-', ''), 6) where slug is null;
+
+do $$
+declare t text;
+begin
+  foreach t in array array['products', 'projects'] loop
+    execute format('alter table public.%I alter column slug set not null', t);
+    execute format('alter table public.%I drop constraint if exists %I', t, t || '_slug_format');
+    execute format('alter table public.%I add constraint %I check (slug ~ ''^[a-z0-9][a-z0-9-]{0,90}$'')', t, t || '_slug_format');
+    execute format('create unique index if not exists %I on public.%I (slug)', t || '_slug_key', t);
+    execute format('drop trigger if exists %I on public.%I', t || '_slug', t);
+    execute format('create trigger %I before insert on public.%I for each row execute function public.set_slug()', t || '_slug', t);
+  end loop;
+end $$;
+
 drop trigger if exists products_updated_at on public.products;
 create trigger products_updated_at before update on public.products for each row execute function public.set_updated_at();
 drop trigger if exists projects_updated_at on public.projects;

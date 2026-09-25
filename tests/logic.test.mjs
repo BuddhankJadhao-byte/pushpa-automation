@@ -31,6 +31,14 @@ test('estimate matches the original calculator formula', () => {
   assert.equal(max.total, 48000 + 100 * 950 + 14000 + 18000 + 8500 + 22000)
 })
 
+test('prices are read for Google product data', async () => {
+  const { priceValue } = await import('../lib/seo.ts')
+  assert.equal(priceValue('₹4,00,000'), 400000)
+  assert.equal(priceValue('₹45,000.00'), 45000)
+  assert.equal(priceValue('On request'), null)
+  assert.equal(priceValue(''), null)
+})
+
 test('default contact details are intact', () => {
   assert.equal(DEFAULT_SETTINGS.email, 'pariindia91@gmail.com')
   assert.equal(DEFAULT_SETTINGS.whatsapp, '917972741546')
