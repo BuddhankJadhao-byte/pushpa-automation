@@ -1,8 +1,11 @@
 # Environment & Secrets
 .env
+.env*
 *.env
 .agents/mcp_config.json
 mcp_config.json
+*.pem
+*.key
 
 # Dependencies & IDE
 node_modules/
@@ -10,6 +13,12 @@ node_modules/
 Thumbs.db
 __pycache__/
 *.pyc
+
+# Next.js build output
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
 
 # Local Toolkits
 ui-ux-pro-max-skill-main/

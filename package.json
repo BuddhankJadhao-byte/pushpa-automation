@@ -1,26 +1,40 @@
 {
-  "name": "pushpa-automation-main",
-  "version": "1.0.0",
-  "description": "Pushpa Automation & Robotics Industries - 3D Real-Time SCADA & Control Panel Systems (MIDC Bhosari, Pune)",
-  "main": "app.js",
-  "scripts": {
-    "build": "echo 'Static site ready for deployment'",
-    "start": "python -m http.server 8080"
-  },
+  "name": "pushpa-automation",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Pushpa Automation & Robotics Industries — industrial control panel manufacturer website with owner-only CMS (MIDC Bhosari, Pune)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BuddhankJadhao-byte/pushpa-automation.git"
+    "url": "git+https://github.com/BuddhankJadhao-byte/pari-website.git"
   },
-  "keywords": [
-    "industrial-automation",
-    "scada",
-    "plc-panels",
-    "threejs",
-    "webgl-3d"
-  ],
-  "author": "Pushpa Automation & Robotics Industries",
-  "license": "ISC",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"tests/*.test.mjs\""
+  },
   "dependencies": {
-    "motion": "^11.11.17"
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.1",
+    "lucide-react": "^1.48.0",
+    "motion": "^13.4.3",
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
   }
 }

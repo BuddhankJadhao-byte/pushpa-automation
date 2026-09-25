@@ -1,85 +1,127 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-/* Custom CSS Variables for consistent theming */
-:root {
-  --color-primary: oklch(84% 0.2 180);
-  --color-primary-foreground: oklch(95% 0.01 20);
-  --color-secondary: oklch(88% 0.16 200);
-  --color-background: oklch(10% 0.03 30);
-  --color-foreground: oklch(95% 0.02 210);
-  --color-muted: oklch(60% 0.01 255);
-  --color-muted-foreground: oklch(65% 0.02 255);
-  --color-card: oklch(17% 0.04 30);
-  --color-card-foreground: oklch(95% 0.01 20);
-  --color-border: oklch(40% 0.03 300);
-  --radius: 8px;
+@theme inline {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), var(--font-geist), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', monospace;
 }
 
-/* Custom properties for animation state */
-@property --angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial: 0deg;
+@theme {
+  /* Graphite surfaces + indicator-lamp accents (amber = signal, green = live, red = E-stop) */
+  --color-canvas: #0a0a0b;
+  --color-surface: #111113;
+  --color-raised: #18181b;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.16);
+  --color-fg: #f4f4f5;
+  --color-muted: #a1a1aa;
+  --color-subtle: #8b8b94;
+  --color-accent: #f5a524;
+  --color-accent-strong: #ffbb3d;
+  --color-live: #22c55e;
+  --color-alert: #ef4444;
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-lamp: lamp 2.4s ease-in-out infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes lamp {
+    50% {
+      opacity: 0.35;
+    }
+  }
 }
 
-/* Reduced motion preference */
+@utility container-x {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Precision "blueprint" grid, fading out toward the edges */
+@utility bg-blueprint {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 40%, transparent 100%);
+}
+
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(255 255 255 / 0.22);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-canvas font-sans text-fg antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-canvas);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled),
+  a[href],
+  label[for],
+  select,
+  summary {
+    cursor: pointer;
+  }
+  input[type='range'] {
+    accent-color: var(--color-accent);
+  }
+  /* Film grain — a static texture, costs nothing to scroll */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* The intro plays once per browser session; returning page loads skip it before first paint. */
+html[data-intro='seen'] #intro {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: oklch(40% 0.03 300);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: oklch(45% 0.04 300);
-}
-
-/* Focus-visible styles */
-:focus-visible {
-  outline: 2px solid oklch(84% 0.2 180);
-  outline-offset: 2px;
-}
-
-/* Custom transitions */
-@layer utilities {
-  .transition-3d {
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                opacity 0.5s ease,
-                background 0.3s ease,
-                box-shadow 0.3s ease;
-  }
-
-  .transition-spring {
-    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-                opacity 0.3s ease;
-  }
-
-  .filter-blur {
-    filter: blur(0px);
-  }
-
-  .backface-hidden {
-    backface-visibility: hidden;
-  }
-
-  .perspective-1000 {
-    perspective: 1000px;
+    animation-iteration-count: 1 !important;
   }
 }

@@ -1,109 +1,93 @@
-# Pushpa Automation & Robotics Industries ⚡🤖
+# Pushpa Automation & Robotics Industries — website
 
-> **Premier Industrial Automation, Custom Control Panel & Sensor Engineering Website**
-> 📍 Rajdhani Industrial Complex, F1, EL Block, MIDC, Bhosari, Pimpri-Chinchwad, Pune, Maharashtra 411026
-> ⭐ **5.0 / 5.0 Rating** (106+ Verified Google Reviews) | 📞 079727 41546
+Website for **Pushpa Automation & Robotics Industries**, an industrial control panel manufacturer in MIDC Bhosari, Pune. It has an animated public site and a private owner panel at `/admin`. From the panel the owner can add products, finished projects and reviews without writing code.
 
----
+- **Public site:** animated hero, OEM marquee that reacts to scroll speed, product catalogue with category filters and a detail popup, a horizontal "inside the panel" scroll story, a process timeline, an instant price estimator, reviews, FAQ, contact form, custom cursor and click sparks.
+- **Owner panel (`/admin`):** sign in with a one-time code sent to the owner's email. Manage products, projects ("Our work"), reviews, enquiries and site settings (phone, hours, homepage numbers, announcement bar). Photos are compressed in the browser before upload.
+- **Security:** described [below](#security).
 
-## 🌟 Overview
+## Tech stack
 
-This repository contains the high-tech, sensory cyber-industrial website for **Pushpa Automation and Robotics Industries**. Engineered with real-time reactive canvas sensor grids, Web Audio API procedural synthesizer haptics, an interactive 3D control panel simulator, a live sensor testing sandbox, product catalog with direct WhatsApp ordering, and a smart quotation estimator.
+| | |
+|---|---|
+| Framework | Next.js 16 (App Router, Server Actions), React 19, TypeScript |
+| Styling | Tailwind CSS 4 |
+| Animation | Motion 13 (Framer Motion) |
+| Backend | Supabase: Postgres with Row Level Security, email one-time-code login, image storage |
+| Validation | Zod 4, plus CHECK constraints in the database |
+| Hosting | Vercel (functions in `bom1` / Mumbai) |
 
----
+## Going live
 
-## 🎛️ Key Interactive Features
+To connect the database and switch on the owner panel, follow **[SETUP.md](SETUP.md)**. It takes about 15 minutes. Until then the site runs on built-in starter content, and `/admin` says the backend is not connected.
 
-1. **3D Industrial Control Panel Simulator (Hero Section)**:
-   - **Emergency Mushroom E-STOP**: Push to trigger emergency hazard mode with alert sirens; reset to restore normal operation.
-   - **VFD Frequency & Motor Speed Potentiometer**: Real-time slider ($0 - 60\text{ Hz}$) dynamically adjusting synchronous motor RPM, load current, and motor audio pitch.
-   - **Optical Laser Conveyor Beam & Counter**: Passing parts triggers optical sensor detection, flashes LED, and increments batch counter.
-   - **PLC Digital I/O Status LEDs**: Live simulated port blinking (PWR, RUN, X0-X2, Y0-Y1, COMM, ERR).
+## Local development
 
-2. **Sensor & Logic Simulation Sandbox**:
-   - **Inductive Proximity Sensor M18**: Interactive target distance slider triggering NO to NC contact closure at $\le 8.0\text{ mm}$.
-   - **Dynamic Telemetry Oscilloscope**: Real-time canvas oscillograph rendering vibration RTD and current harmonics modulated by cursor velocity.
-   - **PLC Ladder Logic Simulator**: Interactive input contacts ($X0, X1$) and Boolean gates (`AND`, `OR`, `LATCH`, `NAND`) energizing output coil `(Y0)`.
-
-3. **Procedural Web Audio API Synthesizer**:
-   - Zero-dependency synthetic relay clicks, sensor beeps, alarm sirens, sonar radar sweeps, and VFD motor hums.
-   - Top-bar audio mute toggle with localStorage persistence.
-
-4. **Product Catalog & Pricing**:
-   - **PLC HMI Control Panel** — ₹45,000.00
-   - **Heavy Duty VFD Control Panel** — ₹45,000.00
-   - **VFD Control Panel (Compact)** — ₹25,000.00
-   - **50 HP Heavy Star Delta Panel** — ₹4,00,000.00
-   - **Standard Star Delta Panel** — ₹18,000.00
-   - **Flame Proof Panel (Ex-d)** — ₹55,000.00
-   - **Stepper & Servo Motion Panel** — ₹80,000.00
-   - **Thyristor Power Control Panel** — ₹18,000.00
-   - **Custom Industrial Control Panel** — ₹10,000.00
-   - **CRCA Panel Box Enclosure** — ₹14,500.00
-   - **Delta AS Series PLCs & CNC Sensors**
-   - Detailed Technical Specs modal & one-click prefilled WhatsApp inquiries.
-
-5. **Smart Panel Quotation Estimator**:
-   - Configurable panel estimator by motor HP, architecture, PLC brand, and sensor add-ons with direct WhatsApp RFQ transmission.
-
-6. **Verified Google Reviews & MIDC Bhosari Facility Hub**:
-   - 5.0-star reviews from verified industrial clients.
-   - Live operating hours status and Google Maps navigation links.
-
----
-
-## 🚀 Deployment
-
-### ⚡ Option 1: 1-Click Deploy to Vercel (Recommended)
-Deploy instantly to Vercel with automated CI/CD:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FBuddhankJadhao-byte%2Fpushpa-automation)
-
-### 💻 Option 2: Deploy via Vercel CLI
 ```bash
-# 1. Login to your Vercel account
-vercel login
-
-# 2. Deploy directly from the project directory
-vercel --prod
+npm install
 ```
 
-### 🏠 Option 3: Local Development
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/BuddhankJadhao-byte/pushpa-automation.git
-   cd pushpa-automation
-   ```
+```bash
+npm run dev
+```
 
-2. **Serve locally**:
-   ```bash
-   # Using Python:
-   python -m http.server 8080
+The site runs at http://localhost:3000. To connect a real Supabase project, create `.env.local` containing `SUPABASE_URL=` and `SUPABASE_ANON_KEY=` (see SETUP.md, step 5).
 
-   # Or using Node:
-   npx serve .
-   ```
+To try the owner panel **without** a Supabase account, use the local mock backend. It runs real Postgres through PGlite with the same security rules. Login codes are printed in the terminal.
 
-3. **Open in browser**:
-   Navigate to `http://localhost:8080` (or simply double-click `index.html`).
+```bash
+node tests/dev-with-mock.mjs
+```
 
+This serves the site at http://localhost:3001. Sign in at `/admin` with `pariindia91@gmail.com`.
 
----
+Tests cover the database security rules (run against real Postgres), opening hours, and estimator pricing:
 
-## 🛠️ Tech Stack
+```bash
+npm test
+```
 
-- **Markup & Semantics**: HTML5 with Schema.org `LocalBusiness` Structured Data
-- **Styling**: Vanilla CSS3 (Cyber-Industrial Design System, CSS Variables, Glassmorphism, 3D Transforms)
-- **Visual Effects**: HTML5 Canvas 2D Engine (`sensor-engine.js`)
-- **Audio Engine**: Web Audio API Procedural Synthesizer (`sound-fx.js`)
-- **Application Logic**: Vanilla JavaScript ES6+ (`app.js`)
+Type-check:
 
----
+```bash
+npm run typecheck
+```
 
-## 🏢 Contact Information
+## Project structure
 
-- **Company**: Pushpa Automation & Robotics Industries
-- **Address**: Rajdhani Industrial Complex, F1, EL Block, MIDC, Bhosari, Pimpri-Chinchwad, Maharashtra 411026, India
-- **Phone / WhatsApp**: [+91 79727 41546](tel:07972741546)
-- **Official Email**: [pariindia91@gmail.com](mailto:pariindia91@gmail.com)
-- **YouTube**: [Pushpa Automation Official Channel](https://www.youtube.com/channel/UCRYrQLNKqdKEMk4ek9edy9w)
+```
+app/
+  page.tsx               public homepage (server component; reads content)
+  actions.ts             contact / enquiry server action
+  admin/                 owner panel: login, dashboard, CRUD pages, server actions
+components/
+  site/                  public sections (hero, products, anatomy, estimator, …)
+  admin/                 owner panel UI (forms, image upload, lists)
+  motion/primitives.tsx  shared animation building blocks
+lib/
+  content.ts             content types + starter content
+  data.ts                cached public content loader
+  schemas.ts             zod validation for every write
+  media.ts               image upload checks and cleanup
+  supabase/              server-only Supabase clients + owner gate
+proxy.ts                 CSP nonce, security headers, owner session refresh
+supabase/schema.sql      tables, Row Level Security, functions, storage rules
+tests/                   database security tests, logic tests, local mock backend
+```
+
+## Security
+
+- **Owner-only writes, enforced twice.** Every admin Server Action first checks `public.is_admin()`. That function only returns true for a signed-in user whose **confirmed** email is listed in `public.admins`. The database then runs the action under Row Level Security again, using the owner's own session. `tests/rls.test.mjs` shows that visitors and signed-in non-owners cannot write anything.
+- **No sign-ups and no passwords.** The login form never creates accounts (`shouldCreateUser: false`), and sign-ups are disabled in Supabase. The reply is identical for any email address, so it does not reveal who the owner is.
+- **Session cookies** are `HttpOnly`, `Secure`, `SameSite=Lax`, and scoped to `/admin`, so the public pages never receive them.
+- **Least privilege.** Only the anon/publishable key is used, and only on the server. The browser never talks to Supabase directly, and no service-role key exists anywhere in the app.
+- **Strict Content-Security-Policy** with a fresh nonce on every request (`strict-dynamic`, `frame-ancestors 'none'`, `object-src 'none'`). The site also sends HSTS, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and COOP headers, and does not send `X-Powered-By`.
+- **Input validation** runs through zod on every write, with length limits repeated as database CHECK constraints. URLs must use `https`, and all rendered content is escaped by React.
+- **Uploads:** the server identifies the file type from its first bytes (JPG, PNG, WebP or AVIF only, never SVG). Uploads are capped at 4 MB, stored under random file names, and the storage bucket enforces the same rules. Photos are re-encoded in the browser, which strips GPS/EXIF data.
+- **Abuse limits:** the enquiry form has a honeypot field and allows 5 per hour per visitor plus a global hourly cap. Login allows 5 code emails and 10 code attempts per 15 minutes per visitor. These counters live in Postgres, so they hold across serverless instances, and IPs are stored only as short-lived hashes.
+- **Personal data:** enquiries are readable only by the owner. The panel can mark enquiries closed and delete them, so the owner can remove data that is no longer needed.
+- **Supply chain:** dependency install scripts are disabled (`.npmrc`). `npm audit` reports 0 vulnerabilities, and all registry signatures verify.
+
+## Contact
+
+Rajdhani Industrial Complex, F1, EL Block, MIDC Bhosari, Pimpri-Chinchwad, Maharashtra 411026 · +91 79727 41546 · pariindia91@gmail.com
