@@ -28,13 +28,18 @@ export async function proxy(request: NextRequest) {
   const csp = contentSecurityPolicy(nonce)
   const { pathname } = request.nextUrl
   const code = request.nextUrl.searchParams.get('code')
+  const token_hash = request.nextUrl.searchParams.get('token_hash')
 
-  if (code && pathname !== '/auth/callback') {
+  if ((code || token_hash) && pathname !== '/auth/callback') {
     const callbackUrl = new URL('/auth/callback', request.url)
-    callbackUrl.searchParams.set('code', code)
+    if (code) callbackUrl.searchParams.set('code', code)
+    if (token_hash) callbackUrl.searchParams.set('token_hash', token_hash)
+    const type = request.nextUrl.searchParams.get('type')
+    if (type) callbackUrl.searchParams.set('type', type)
     callbackUrl.searchParams.set('next', '/admin')
     return NextResponse.redirect(callbackUrl)
   }
+
 
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/')
 
