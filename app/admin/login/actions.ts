@@ -24,9 +24,35 @@ async function sendCode(form: FormData): Promise<LoginState> {
 
   const db = await createSessionClient()
   // shouldCreateUser: false — this form can never create accounts. Only the owner's
-  // pre-created account receives a code; the reply is identical either way.
+  // pre-created account receives a code.
   const { error } = await db.auth.signInWithOtp({ email: email.data, options: { shouldCreateUser: false } })
-  if (error && error.status !== 422 && error.status !== 400) console.error('otp send failed', error.status)
+  if (error) {
+    console.error('[Auth] signInWithOtp failed:', {
+      status: error.status,
+      code: error.code,
+      message: error.message,
+    })
+
+    if (error.status === 429) {
+      return { step: 'email', message: 'Too many login code requests. Please wait a few minutes and try again.', error: true }
+    }
+    if (error.status === 422 || error.status === 400) {
+      if (error.code === 'email_provider_disabled') {
+        return { step: 'email', message: 'Email login provider is disabled in Supabase Authentication settings.', error: true }
+      }
+      return {
+        step: 'email',
+        message: 'Unable to send login code. Verify that this email is registered in Supabase Authentication -> Users.',
+        error: true,
+      }
+    }
+    return {
+      step: 'email',
+      message: 'Email delivery failed. Please check Custom SMTP settings in the Supabase dashboard.',
+      error: true,
+    }
+  }
+
   return { step: 'code', email: email.data, message: 'If this is the owner email, a login code is on its way. Check the inbox (and spam).' }
 }
 

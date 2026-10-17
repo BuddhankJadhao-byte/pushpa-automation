@@ -20,7 +20,11 @@ async function loadContent(): Promise<SiteContent> {
   ])
   const failed = [settings, products, projects, reviews].find((r) => r.error)
   // Throwing keeps the last good cached copy on screen instead of caching an outage.
-  if (failed?.error) throw new Error(`Content query failed: ${failed.error.message}`)
+  if (failed?.error) {
+    const raw = failed.error.message || ''
+    const msg = raw.startsWith('<') ? 'Upstream endpoint returned HTML instead of JSON data' : raw
+    throw new Error(`Content query failed: ${msg}`)
+  }
 
   const saved = settingsSchema.partial().safeParse(settings.data?.data ?? {})
   return {
@@ -33,13 +37,23 @@ async function loadContent(): Promise<SiteContent> {
 
 /** Only our own storage bucket or bundled /images may reach <Image>; anything else would crash the page. */
 function withSafeImage<T extends { image: string | null }>(row: T): T {
-  const ok = row.image && (/^\/images\/[\w-]+\.(jpe?g|png|webp|avif)$/.test(row.image) || row.image.startsWith(`${process.env.SUPABASE_URL}/storage/v1/object/public/media/`))
+  const config = supabaseConfig()
+  const mediaPrefix = config ? `${config.url}/storage/v1/object/public/media/` : null
+  const ok =
+    row.image &&
+    (/^\/images\/[\w-]+\.(jpe?g|png|webp|avif)$/.test(row.image) || (mediaPrefix && row.image.startsWith(mediaPrefix)))
   return ok ? row : { ...row, image: null }
 }
 
 const cachedContent = unstable_cache(loadContent, ['site-content-v1'], { tags: [CONTENT_TAG], revalidate: 3600 })
 
-/** Everything the public site renders. Starter content until Supabase is connected. */
+/** Everything the public site renders. Starter content until Supabase is connected or on cold cache failure. */
 export async function getSiteContent(): Promise<SiteContent> {
-  return supabaseConfig() ? cachedContent() : STARTER_CONTENT
+  if (!supabaseConfig()) return STARTER_CONTENT
+  try {
+    return await cachedContent()
+  } catch (err) {
+    console.error('Failed to load content from database, serving starter fallback:', err instanceof Error ? err.message : String(err))
+    return STARTER_CONTENT
+  }
 }

@@ -7,9 +7,27 @@ import { createClient } from '@supabase/supabase-js'
 import { SESSION_COOKIE } from './cookie'
 
 export function supabaseConfig() {
-  const url = process.env.SUPABASE_URL
-  const key = process.env.SUPABASE_ANON_KEY
-  return url && key ? { url, key } : null
+  const rawUrl = process.env.SUPABASE_URL?.trim()
+  const key = process.env.SUPABASE_ANON_KEY?.trim()
+  if (!rawUrl || !key) return null
+
+  try {
+    const parsed = new URL(rawUrl)
+    if (!['http:', 'https:'].includes(parsed.protocol)) return null
+    // Supabase project APIs are hosted on *.supabase.co (or localhost/127.0.0.1 for local dev).
+    // The marketing site or dashboard (supabase.com / app.supabase.com) is not an API endpoint.
+    if (parsed.hostname === 'supabase.com' || parsed.hostname === 'app.supabase.com') {
+      console.error(
+        `[Supabase] Invalid SUPABASE_URL "${rawUrl}". Project APIs are located at "https://<project-ref>.supabase.co", not "supabase.com". Check Project Settings -> API in your Supabase dashboard.`
+      )
+      return null
+    }
+    const url = rawUrl.replace(/\/+$/, '')
+    return { url, key }
+  } catch {
+    console.error(`[Supabase] Invalid SUPABASE_URL format: "${rawUrl}"`)
+    return null
+  }
 }
 
 function requireConfig() {
