@@ -28,6 +28,7 @@ async function sendCode(form: FormData): Promise<LoginState> {
   const { error } = await db.auth.signInWithOtp({ email: email.data, options: { shouldCreateUser: false } })
   if (error) {
     console.error('[Auth] signInWithOtp failed:', {
+      email: email.data,
       status: error.status,
       code: error.code,
       message: error.message,
@@ -42,13 +43,13 @@ async function sendCode(form: FormData): Promise<LoginState> {
       }
       return {
         step: 'email',
-        message: 'Unable to send login code. Verify that this email is registered in Supabase Authentication -> Users.',
+        message: 'No registered owner account found for this email. Check Supabase Authentication -> Users.',
         error: true,
       }
     }
     return {
       step: 'email',
-      message: 'Email delivery failed. Please check Custom SMTP settings in the Supabase dashboard.',
+      message: 'Email delivery failed (SMTP 500). In Supabase -> Project Settings -> Authentication -> SMTP: Gmail requires a 16-character Google App Password (not your normal Gmail password), and Sender Email must be pariindia91@gmail.com. Alternatively, turn off Custom SMTP.',
       error: true,
     }
   }
