@@ -23,9 +23,15 @@ async function sendCode(form: FormData): Promise<LoginState> {
   if (!(await allowed('login-send', 5))) return { step: 'email', message: 'Too many attempts. Wait 15 minutes and try again.', error: true }
 
   const db = await createSessionClient()
-  // shouldCreateUser: false — this form can never create accounts. Only the owner's
-  // pre-created account receives a code.
-  const { error } = await db.auth.signInWithOtp({ email: email.data, options: { shouldCreateUser: false } })
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://www.pushpaautobotics.com'
+  const emailRedirectTo = `${siteUrl.replace(/\/+$/, '')}/auth/callback?next=/admin`
+  const { error } = await db.auth.signInWithOtp({
+    email: email.data,
+    options: {
+      shouldCreateUser: false,
+      emailRedirectTo,
+    },
+  })
   if (error) {
     console.error('[Auth] signInWithOtp failed:', {
       email: email.data,

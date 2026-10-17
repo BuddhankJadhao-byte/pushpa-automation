@@ -27,6 +27,15 @@ export async function proxy(request: NextRequest) {
   const nonce = btoa(crypto.randomUUID())
   const csp = contentSecurityPolicy(nonce)
   const { pathname } = request.nextUrl
+  const code = request.nextUrl.searchParams.get('code')
+
+  if (code && pathname !== '/auth/callback') {
+    const callbackUrl = new URL('/auth/callback', request.url)
+    callbackUrl.searchParams.set('code', code)
+    callbackUrl.searchParams.set('next', '/admin')
+    return NextResponse.redirect(callbackUrl)
+  }
+
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/')
 
   // Refresh the owner's session on admin routes only; public pages never carry auth cookies.
